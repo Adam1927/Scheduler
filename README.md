@@ -63,16 +63,25 @@ Open the `server` and `client` in separate VSCode workspaces or open the combine
 
 ### Purpose
 
-2-5 sentences describing what the system does
+This web application will allow users to share their schedules/calendars together and create joint meetings at the most opportune time for all members. The system evaluates the joint availability of the team members, which they change individually by creating personal events, in order to create meetings at the most optimal time, at the manager's prompt. This will help make organizing and planning easier and more convenient for the users.
+The goal is to give team members a clear overview of everyone’s availability and help in making sure that no one will miss out on important meetings because of unclear time management and communication.
+
 
 ### Pages
 
-* Home: 1-3 sentences describing what the page displays and what a user can do
-* Shopping cart: ...
+* Login/register page is for all users to enter their account.
+* Main page is where the user can view and edit their calendar, add events, and check notifications.
+* Main page for managers includes all the same but with the additional functionalities for managing (create, edit, delete) teams, meetings, and making users managers.
+* Event page which includes information about the event and edit functionality, is accessed by clicking on an event in the calendar.
+* Meeting page includes all the same but with the addition of information about the team and manager, allows users to RSVP on events and edit functionality is restricted to managers. 
+* Team page includes info about team members: emails, names, privileges. If the user is a manager, they have the functionality to add and remove users or edit the team info. For the manager, it also displays a calendar with all the availabilities of the team.
+* Notification page gives a more detailed look at the users notifications, accessed from notifications from users main page. 
+* Profile page gives users the ability to edit their profiles or delete their account.
+
 
 ### Entity-Relationship (ER) Diagram
 
-![ER Diagram](./images/er_diagram.png)
+![ER Diagram](./images/er_diagram.jpg)
 
 ## Teaser (MS3)
 
