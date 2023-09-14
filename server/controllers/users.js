@@ -296,7 +296,7 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
 });
 
 
-app.get('/logout', async function (req, res, next) {
+router.get('/logout', async function (req, res, next) {
   try {
     if (req.apiVersion !== '1') {
       return res.status(400).json({ 'message': 'API version not found' })
