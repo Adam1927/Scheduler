@@ -4,9 +4,11 @@ var morgan = require('morgan');
 var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
+var usersController = require('./controllers/users');
+const session = require('express-session');
 
 // Variables
-var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/animalDevelopmentDB';
+var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
 var port = process.env.PORT || 3000;
 
 // Connect to MongoDB
@@ -30,10 +32,19 @@ app.use(morgan('dev'));
 app.options('*', cors());
 app.use(cors());
 
+app.use(session({
+    secret: 'your-secret-key', // A secret key for session data encryption
+    resave: false,            // Whether to save the session data on each request
+    saveUninitialized: true   // Whether to save uninitialized (empty) sessions
+  }));
+  
+
 // Import routes
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
+
+app.use(usersController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
@@ -68,8 +79,8 @@ app.use(function(err, req, res, next) {
 app.listen(port, function(err) {
     if (err) throw err;
     console.log(`Express server listening on port ${port}, in ${env} mode`);
-    console.log(`Backend: http://localhost:${port}/api/`);
-    console.log(`Frontend (production): http://localhost:${port}/`);
+    console.log(`Backend: http://127.0.0.1:${port}/api/`);
+    console.log(`Frontend (production): http://127.0.0.1:${port}/`);
 });
 
 module.exports = app;
