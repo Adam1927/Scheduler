@@ -7,7 +7,7 @@ const auth = require('../middleware/auth');
 
 router.post('/api/users/register', async function (req, res, next) {
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     const usernames = await User.find({ username: req.body.username }).exec();
@@ -60,7 +60,7 @@ router.post('/api/users/register', async function (req, res, next) {
 
 router.post('/api/users/login', async function (req, res, next) {
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     const { username, password } = req.body;
@@ -105,7 +105,7 @@ router.post('/api/users/login', async function (req, res, next) {
 router.get('/api/users/:id', auth, async function (req, res, next) {
   var id = req.params.id;
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     var user = await User.findById(id);
@@ -147,7 +147,7 @@ router.get('/api/users/:id', auth, async function (req, res, next) {
 router.put('/api/users/:id', auth, async function (req, res, next) {
   var id = req.params.id;
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     var user = await User.findById(id);
@@ -209,7 +209,7 @@ router.put('/api/users/:id', auth, async function (req, res, next) {
 router.patch('/api/users/:id', auth, async function (req, res, next) {
   var id = req.params.id;
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     var user = await User.findById(id);
@@ -270,7 +270,7 @@ router.patch('/api/users/:id', auth, async function (req, res, next) {
 router.delete('/api/users/:id', auth, async function (req, res, next) {
   var id = req.params.id;
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     const user = await User.findOneAndDelete({ _id: id });
@@ -298,7 +298,7 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
 
 router.get('/logout', async function (req, res, next) {
   try {
-    if (req.apiVersion !== '1') {
+    if (req.header('X-API-Version') !== 'v1') {
       return res.status(400).json({ 'message': 'API version not found' })
     }
     await req.session.destroy();
