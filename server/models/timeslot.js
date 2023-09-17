@@ -2,8 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var timeslotSchema = new Schema({
-    datetime: { type: datetime, required: true },
-    attendees: { type: int, default: 0}
+    date: { type: Date, required: true },
+    time: { type: int, required: true },
+    attendees: { type: int }
 });
 
 module.exports = mongoose.model('timeslots', timeslotSchema);

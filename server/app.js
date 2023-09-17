@@ -5,7 +5,10 @@ var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
 var usersController = require('./controllers/users');
+var eventsController = require('./controllers/events');
 const session = require('express-session');
+require('dotenv').config();
+const sessionKey = process.env.SESSION_KEY;
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
@@ -33,7 +36,7 @@ app.options('*', cors());
 app.use(cors());
 
 app.use(session({
-    secret: 'your-secret-key', // A secret key for session data encryption
+    secret: sessionKey, // A secret key for session data encryption
     resave: false,            // Whether to save the session data on each request
     saveUninitialized: true   // Whether to save uninitialized (empty) sessions
   }));
@@ -45,6 +48,7 @@ app.get('/api', function(req, res) {
 });
 
 app.use(usersController);
+app.use(eventsController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
