@@ -6,6 +6,7 @@ var cors = require('cors');
 var history = require('connect-history-api-fallback');
 var usersController = require('./controllers/users');
 var eventsController = require('./controllers/events');
+var teamsController = require('./controllers/teams');
 const session = require('express-session');
 require('dotenv').config();
 const sessionKey = process.env.SESSION_KEY;
@@ -49,6 +50,7 @@ app.get('/api', function(req, res) {
 
 app.use(usersController);
 app.use(eventsController);
+app.use(teamsController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {

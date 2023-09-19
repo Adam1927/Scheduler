@@ -4,8 +4,8 @@ var User = require('../models/user');
 var Team = require('../models/team');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/auth');
-require('dotenv').config();
-const authKey = process.env.AUTH_KEY;
+//require('dotenv').config();
+//const authKey = process.env.AUTH_KEY;
 
 
 router.post('/api/users/register', async function (req, res, next) {
@@ -139,6 +139,7 @@ router.post('/api/users/logout', async function (req, res, next) {
   }
 });
 
+
 router.get('/api/users', auth, async function (req, res, next) {
   try {
 
@@ -195,7 +196,8 @@ router.get('/api/users/:id', auth, async function (req, res, next) {
       'username': user.username,
       'id': user._id,
       'name': user.name,
-      'teams': user.teams,
+      'managedTeams': user.managedTeams,
+      'memberOfTeams': user.memberOfTeams,
       'links': [
         {
           'rel': 'self',
@@ -212,6 +214,44 @@ router.get('/api/users/:id', auth, async function (req, res, next) {
           'type': 'DELETE',
           'href': 'http://127.0.0.1:3000/api/users/' + user._id,
         }
+      ]
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      'error': err
+    });
+  }
+});
+
+
+router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
+  var user_id = req.params.user_id;
+  try {
+
+    // API versioning
+    if (req.header('X-API-Version') !== 'v1') {
+      return res.status(400).json({ 'message': 'API version not found' });
+    }
+
+    // Find user
+    var user = await User.findById(id);
+    if (user === null) {
+      return res.status(404).json({ 'message': 'User not found' });
+    }
+
+    if (user.managedTeams.length === 0 && user.memberOfTeams.length === 0) {
+      return res.status(404).json({ 'message': 'No teams found' });
+    }
+
+    // Success response
+    res.status(200).json({
+      'message': 'Teams found',
+      'id': user._id,
+      'managedTeams': user.managedTeams,
+      'memberOfTeams': user.memberOfTeams,
+      'links': [
+        // add team links
       ]
     });
   } catch (err) {
@@ -378,7 +418,7 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
     }
 
     // Delete user's teams
-    Team.deleteMany({ '_id': { $in: user.teams } });
+    Team.deleteMany({ '_id': { $in: user.managedTeams } });
 
     // End session
     await req.session.destroy();
@@ -386,51 +426,6 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
     // Success response
     res.status(200).json({
       'message': 'User deleted',
-      'links': {
-        'rel': 'self',
-        'type': 'POST',
-        'href': 'http://127.0.0.1:3000/api/users/register',
-      }
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      'error': err
-    });
-  }
-});
-
-// Not used in the application only for testing and (to get that grade)
-router.delete('/api/users', auth, async function (req, res, next) {
-  try {
-
-    // API versioning
-    if (req.header('X-API-Version') !== 'v1') {
-      return res.status(400).json({ 'message': 'API version not found' });
-    }
-
-    // Check user authorization 
-    if (req.header('X-Secret') !== authKey) {
-      res.status(403).json({ 'message': 'Unauthorized' });
-    }
-
-    // Delete users' teams
-    var users = User.find();
-    if (users.length !== 0) {
-      for (var u in users) {
-        Team.deleteMany({ '_id': { $in: u.teams } });
-      }
-    }
-
-    // Delete all users
-    User.deleteMany();
-
-    // End session
-    await req.session.destroy();
-
-    // Success response
-    res.status(200).json({
-      'message': 'Users deleted',
       'links': {
         'rel': 'self',
         'type': 'POST',

@@ -3,9 +3,10 @@ var router = express.Router();
 var Event = require('../models/event');
 var Team = require('../models/team');
 var Timeslot = require('../models/timeslot');
+const auth = require('../middleware/auth');
 
 
-router.post('/api/events', async function (req, res, next) {
+router.post('/api/events', auth, async function (req, res, next) {
     try {
 
         // API versioning
@@ -14,8 +15,8 @@ router.post('/api/events', async function (req, res, next) {
         }
 
         // Check manager status
-        if (req.body.userId !== req.body.team.manager._id) {
-            return res.status(403).json({ 'message': 'Only team manager can create events' })
+        if (req.body.userId !== req.body.team.manager) {
+            return res.status(403).json({ 'message': 'Only team manager can create events' });
         }
 
         // Add the new event
@@ -67,7 +68,7 @@ router.post('/api/events', async function (req, res, next) {
 });
 
 
-router.get('/api/event/:id', async function (req, res, next) {
+router.get('/api/event/:id', auth, async function (req, res, next) {
     var id = req.params.id;
     try {
 
@@ -108,7 +109,7 @@ router.get('/api/event/:id', async function (req, res, next) {
     }
 });
 
-router.patch('/api/events/:id', async function (req, res, next) {
+router.patch('/api/events/:id', auth, async function (req, res, next) {
     var id = req.params.id;
     try {
   
@@ -154,7 +155,7 @@ router.patch('/api/events/:id', async function (req, res, next) {
     }
 });
 
-router.delete('/api/events/:id', async function (req, res, next) {
+router.delete('/api/events/:id', auth, async function (req, res, next) {
     var id = req.params.id;
     try {
 

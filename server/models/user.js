@@ -5,7 +5,14 @@ var userSchema = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
-    teams: { type: [Schema.Types.ObjectID], ref: 'teams'}
+    managedTeams: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Team'
+    }],
+    memberOfTeams: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Team'
+    }]
 });
 
 module.exports = mongoose.model('users', userSchema);

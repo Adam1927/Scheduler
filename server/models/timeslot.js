@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var timeslotSchema = new Schema({
     date: { type: Date, required: true },
-    time: { type: int, required: true },
-    attendees: { type: int }
+    time: { type: Number, required: true },
+    attendees: { type: Number }
 });
 
 module.exports = mongoose.model('timeslots', timeslotSchema);
