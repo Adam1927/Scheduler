@@ -186,7 +186,12 @@ router.get('/api/events/:event_id/optimal_time', auth, async function (req, res,
         }
 
         // Find event
-        var event = await Event.findById(event_id);
+        const event = await Event.findById(event_id).populate({
+            path: 'slots',
+            model: 'timeslots',
+            options: { sort: { attendees: -1, date: 1, time: 1 } }
+        });
+        
         if (event === null) {
             return res.status(404).json({ 'message': 'Event not found' });
         }
@@ -195,12 +200,6 @@ router.get('/api/events/:event_id/optimal_time', auth, async function (req, res,
         if (req.body.userId !== req.body.team.manager) {
             return res.status(403).json({ 'message': 'Only team manager can get optimal time' });
         }
-
-        const event = await Event.findById(event_id).populate({
-            path: 'slots',
-            model: 'timeslots',
-            options: { sort: { attendees: -1, date: 1, time: 1 } }
-        });
 
         optTime = event.slots.slice(0,5);
 
