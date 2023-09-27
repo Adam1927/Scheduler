@@ -25,8 +25,8 @@ router.post('/api/events', auth, async function (req, res, next) {
         const event = new Event({
             name: req.body.name,
             team: req.body.team,
-            startDate: req.body.startDate,
-            endDate: req.body.endDate
+            startDate: Date(req.body.startDate),
+            endDate: Date(req.body.endDate)
         });
 
         numberOfSlots = 0
@@ -94,7 +94,7 @@ router.post('/api/events/:event_id/availability', auth, async function (req, res
         //Check if user is member
         var team = await Team.findById(event.team);
 
-        if (!team.members.includes(req.body.userId)) {
+        if (!team.members.includes(req.body.userId) && team.manager !== req.body.userId) {
             return res.status(404).json({ 'message': 'User is not a member of this team' });
         }
 
@@ -361,7 +361,7 @@ router.delete('/api/events/:event_id/slots/:slot_id', auth, async function (req,
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        // Delete timeslota
+        // Delete timeslot
         Timeslot.findOneAndDelete({ _id: slot_id });
 
         // Success response
