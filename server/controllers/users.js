@@ -146,7 +146,7 @@ router.get('/api/users', auth, async function (req, res, next) {
       return res.status(400).json({ 'message': 'API version not found' });
     }
 
-    var users = User.find();
+    var users = await User.find().lean();
 
     if (users.length === 0) {
       return res.status(404).json({ 'message': 'No users found' });
@@ -412,7 +412,7 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
     }
 
     // Delete user's teams
-    Team.deleteMany({ '_id': { $in: user.managedTeams } });
+    await Team.deleteMany({ '_id': { $in: user.managedTeams } });
 
     // End session
     await req.session.destroy();
