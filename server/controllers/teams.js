@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 var Team = require('../models/team');
+var Event = require('../models/event');
+var Timeslot = require('../models/timeslot');
 const auth = require('../middleware/auth');
 require('dotenv').config();
 const authKey = process.env.AUTH_KEY;
@@ -18,7 +20,7 @@ router.post('/api/teams', auth, async function (req, res, next) {
         // Add the new team
         const team = new Team({
             name: req.body.name,
-            manager: req.body.manager
+            manager: req.body.user
         });
 
         await team.save();
@@ -77,19 +79,19 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
         }
 
         // Check manager status
-        if (req.body.userId !== team.manager) {
+        if (req.body.userId != team.manager) {
             return res.status(403).json({ 'message': 'Only team manager can add members' });
         }
 
-        const usernames = req.body.usernames;
+        var usernames = req.body.usernames;
         var failed = [];
-        for (var username in usernames) {
-            var user = await User.findOne({ username }).exec();
+        for (const username of usernames) {
+            const user = await User.findOne({ username }).exec();
             if (!user) {
                 failed.push(username);
             } else {
                 team.members.push(user._id);
-                user.managedTeams.push(team_id);
+                user.memberOfTeams.push(team_id);
                 await user.save();
             }
         }
@@ -166,7 +168,7 @@ router.get('/api/teams', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        var teams = Team.find();
+        var teams = await Team.find().lean();
 
         if (teams.length === 0) {
             return res.status(404).json({ 'message': 'No teams found' });
@@ -208,7 +210,7 @@ router.put('/api/teams/:id', auth, async function (req, res, next) {
         }
 
         // Check manager status
-        if (req.body.userId !== team.manager) {
+        if (req.body.userId != team.manager) {
             return res.status(403).json({ 'message': 'Only team manager can update team' });
         }
 
@@ -224,8 +226,8 @@ router.put('/api/teams/:id', auth, async function (req, res, next) {
         team.name = req.body.name;
         var oldManager = team.manager;
         team.members.push(oldManager);
-        var newManager = await Team.findById(req.body.managerUsername);
-        team.manager = newManager;
+        var newManager = await User.findOne({ username: req.body.managerUsername }).exec();
+        team.manager = newManager._id;
         await team.save();
 
         // Success response
@@ -267,13 +269,23 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
+        
 
         // Find and delete events and slots
-        var events = Event.find({ '_id': { $in: team.events } });
-        for (var e in events) {
-            Timeslot.deleteMany({ '_id': { $in: e.slots } });
+        var events = await Event.find({ '_id': { $in: team.events } });
+        for (const e of events) {
+            await Timeslot.deleteMany({ '_id': { $in: e.slots } });
         }
-        Event.deleteMany({ '_id': { $in: events } });
+        await Event.deleteMany({ '_id': { $in: events } });
+
+        // Remove the team from user's teams
+        var manager = await User.findById(team.manager);
+        manager.managedTeams.pull(team._id);
+        await manager.save();
+        await User.updateMany(
+            { _id: { $in: team.members } },
+            { $pull: { memberOfTeams: team._id } }
+        );
 
         // Success response
         res.status(200).json({
@@ -303,23 +315,21 @@ router.delete('/api/teams', auth, async function (req, res, next) {
 
         // Check user authorization 
         if (req.header('X-Secret') !== authKey) {
-            res.status(403).json({ 'message': 'Unauthorized' });
+            return res.status(403).json({ 'message': 'Unauthorized' });
         }
 
-        // Delete events and timeslots
-        var teams = Team.find();
-        if (teams.length !== 0) {
-            for (var t in teams) {
-                var events = Event.find({ '_id': { $in: t.events } });
-                for (var e in events) {
-                    Timeslot.deleteMany({ '_id': { $in: e.slots } });
-                }
-                Event.deleteMany({ '_id': { $in: events } });
-            }
-        }
+        // Delete all timeslots, events, and teams
+        await Timeslot.deleteMany({});
+        await Event.deleteMany({});
+        await Team.deleteMany({});
 
-        // Delete all teams
-        Team.deleteMany();
+        // Delete all users' teams
+        var users = await User.find();
+        for (u of users) {
+            u.managedTeams = [];
+            u.memberOfTeams = [];
+            await u.save();
+        }
 
         // Success response
         res.status(200).json({

@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var eventSchema = new Schema({
     name: { type: String, required: true },
-    team: { type: Schema.Types.ObjectID, ref: 'teams', required: true, immutable: true },
-    slots: { type: [Schema.Types.ObjectID], ref: 'timeslots' },
+    team: { type: Schema.Types.ObjectId, ref: 'teams', required: true, immutable: true },
+    slots: { type: [Schema.Types.ObjectId], ref: 'timeslots' },
     startDate: { type: Date, require: true, immutable: true },
     endDate: { type: Date, require: true, immutable: true },
     numberOfSlots: { type: Number }
