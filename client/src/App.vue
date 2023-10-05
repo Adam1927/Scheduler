@@ -1,13 +1,11 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      <router-link to="/login">Login</router-link>
-      <router-link to="/signup">Sign up</router-link>
-      <!--<router-link to="/mainpage">Main page</router-link>-->
-    </div>
+    <b-nav tabs>
+      <b-nav-item href="/login" style="margin-left:auto;display:flex;justify-content:center;">Login</b-nav-item>
+      <b-nav-item href="/signup" style="margin-right:auto;display:flex;justify-content:center;">Sign up</b-nav-item>
+    </b-nav>
     <!-- Render the content of the current page view -->
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
