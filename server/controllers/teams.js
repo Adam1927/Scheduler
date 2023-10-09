@@ -20,8 +20,17 @@ router.post('/api/teams', auth, async function (req, res, next) {
         // Add the new team
         const team = new Team({
             name: req.body.name,
-            manager: req.body.user
+            manager: req.body.user 
         });
+
+        // Add members to the team
+        if (req.body.members) {
+            for (const member of req.body.members) {
+                if (team.members.indexOf(member) === -1) {
+                    team.members.push(member);
+                }
+            }
+        }
 
         await team.save();
 
@@ -83,16 +92,12 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
             return res.status(403).json({ 'message': 'Only team manager can add members' });
         }
 
-        var usernames = req.body.usernames;
-        var failed = [];
-        for (const username of usernames) {
-            const user = await User.findOne({ username }).exec();
-            if (!user) {
-                failed.push(username);
-            } else {
-                team.members.push(user._id);
-                user.memberOfTeams.push(team_id);
-                await user.save();
+        // Add members to the team
+        if (req.body.members) {
+            for (const member of req.body.members) {
+                if (team.members.indexOf(member) === -1) {
+                    team.members.push(member);
+                }
             }
         }
 
@@ -102,7 +107,6 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
         res.status(200).json({
             'message': 'Team members added successfully',
             'id': team._id,
-            'invalidUsernames': failed,
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
@@ -122,42 +126,42 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
 router.get('/api/teams/:id', auth, async function (req, res, next) {
     var id = req.params.id;
     try {
-  
-      // API versioning
-      if (req.header('X-API-Version') !== 'v1') {
-        return res.status(400).json({ 'message': 'API version not found' });
-      }
-  
-      // Find team
-      var team = await Team.findById(id);
-      if (team === null) {
-        return res.status(404).json({ 'message': 'Team not found' });
-      }
-  
-      // Success response
-      res.status(200).json({
-        'message': 'Team found',
-        'team': team,
-        'links': [
-          {
-            'rel': 'self',
-            'type': 'PUT',
-            'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
-          },
-          {
-            'rel': 'self',
-            'type': 'DELETE',
-            'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
-          }
-        ]
-      });
+
+        // API versioning
+        if (req.header('X-API-Version') !== 'v1') {
+            return res.status(400).json({ 'message': 'API version not found' });
+        }
+
+        // Find team
+        var team = await Team.findById(id);
+        if (team === null) {
+            return res.status(404).json({ 'message': 'Team not found' });
+        }
+
+        // Success response
+        res.status(200).json({
+            'message': 'Team found',
+            'team': team,
+            'links': [
+                {
+                    'rel': 'self',
+                    'type': 'PUT',
+                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                },
+                {
+                    'rel': 'self',
+                    'type': 'DELETE',
+                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                }
+            ]
+        });
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        'error': err
-      });
+        console.log(err);
+        res.status(500).json({
+            'error': err
+        });
     }
-  });
+});
 
 
 router.get('/api/teams', auth, async function (req, res, next) {
@@ -269,7 +273,7 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
-        
+
 
         // Find and delete events and slots
         var events = await Event.find({ '_id': { $in: team.events } });

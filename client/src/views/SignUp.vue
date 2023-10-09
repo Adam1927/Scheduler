@@ -1,31 +1,17 @@
 <template>
   <div>
+    <RegisterHeaderVue />
     <b-container>
       <b-row>
         <b-col md="6" offset-md="3">
-          <div
-            class="logo"
-            style="font-size: 3rem; color: #fff; margin-top: 35px"
-          >
-            Meeting Scheduler
-          </div>
-          <div
-            class="sign-up"
-            style="
-              font-size: 2rem;
-              color: #0f817a;
-              margin-top: 35px;
-              margin-bottom: 15px;
-            "
-          >
-            SIGN UP
-          </div>
+          <div class="logo">Meeting Scheduler</div>
+          <div class="heading">SIGN UP</div>
           <b-form @submit="onSubmit">
             <b-form-group
               id="name-group"
               label="Name:"
               label-for="input-1"
-              style="color: #fff"
+              class="form-group"
             >
               <b-form-input
                 id="input-1"
@@ -39,7 +25,7 @@
               id="username-group"
               label="Username:"
               label-for="input-2"
-              style="color: #fff"
+              class="form-group"
             >
               <b-form-input
                 id="input-2"
@@ -53,7 +39,7 @@
               id="password-group"
               label="Password:"
               label-for="input-3"
-              style="color: #fff"
+              class="form-group"
             >
               <b-form-input
                 id="input-3"
@@ -68,7 +54,7 @@
               id="confirm-password-group"
               label="Confirm Password:"
               label-for="input-4"
-              style="color: #fff"
+              class="form-group"
             >
               <b-form-input
                 id="input-4"
@@ -80,7 +66,7 @@
             </b-form-group>
 
             <b-button
-              style="background-color: #0f817a; color: #cff4f4"
+              id="submit-button"
               type="submit"
               variant="primary"
               >Sign up</b-button
@@ -94,9 +80,11 @@
 
 <script>
 import { Api } from '@/Api'
+import RegisterHeaderVue from '../components/RegisterHeader.vue'
 export default {
-  mounted() {
-    document.body.style.backgroundColor = '#232526'
+  name: 'sign-up',
+  components: {
+    RegisterHeaderVue
   },
   data() {
     return {
@@ -123,8 +111,8 @@ export default {
         })
           .then((response) => {
             if (response.data.message === 'Registration successful') {
-              localStorage.setItem('id', response.data.id)
-              this.$router.push('/home')
+              sessionStorage.setItem('id', response.data.id)
+              this.$router.push('/')
               this.$router.go(0)
             }
           })

@@ -34,19 +34,41 @@ app.use(express.json());
 // HTTP request logger
 app.use(morgan('dev'));
 // Enable cross-origin resource sharing for frontend must be registered before api
+const corsOptions = {
+    origin: [
+        'http://localhost:8080',
+        'http://localhost:3000'
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['X-Secret', 'X-API-Version', 'Content-Type', 'Authorization'],
+}
+app.use(cors(corsOptions));
 app.options('*', cors());
-app.use(cors());
+
 
 app.use(session({
     secret: sessionKey, // A secret key for session data encryption
     resave: false,            // Whether to save the session data on each request
-    saveUninitialized: true   // Whether to save uninitialized (empty) sessions
+    saveUninitialized: true,   // Whether to save uninitialized (empty) sessions
+    cookie: {
+        secure: false,         // Whether to allow setting cookies over HTTP (only over HTTPS)
+        maxAge: 60 * 60 * 1000,  // Session timeout in milliseconds (1 hour)
+      }
   }));
   
 
 // Import routes
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
+});
+
+app.get('/api/session', function(req, res) {
+    if (req.session && req.session.user) {
+        res.status(200).json(req.session.user);
+    } else {
+        res.status(401).json({ message: 'Authentication failed' });
+    }
 });
 
 app.use(usersController);

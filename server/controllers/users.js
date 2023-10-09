@@ -229,7 +229,9 @@ router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
     }
 
     // Find user
-    var user = await User.findById(user_id);
+    var user = await User.findById(user_id)
+      .populate('managedTeams')
+      .populate('memberOfTeams');
     if (user === null) {
       return res.status(404).json({ 'message': 'User not found' });
     }

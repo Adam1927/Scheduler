@@ -1,20 +1,22 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { Api } from './Api'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Signup from './views/SignUp.vue'
-// import MainPage from './views/MainPage.vue'
+import AddTeam from './views/AddTeam.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -23,16 +25,33 @@ export default new Router({
     },
     {
       path: '/signup',
-      name: 'sign up',
+      name: 'sign-up',
       component: Signup
-    }
-    /*
-    ,
+    },
     {
-      path: '/mainpage',
-      name: 'main page',
-      component: MainPage
+      path: '/teams/new',
+      name: 'add-team',
+      component: AddTeam,
+      meta: { requiresAuth: true }
     }
-    */
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    Api.get('/session').then(response => {
+      if (response.status === 200 && sessionStorage.getItem('id') !== null) {
+        next()
+      } else {
+        next('/login')
+      }
+    }).catch(error => {
+      console.log(error)
+      next('/login')
+    })
+  } else {
+    next()
+  }
+})
+
+export default router

@@ -1,40 +1,114 @@
 <template>
   <div>
-    <b-jumbotron header="DIT342 Frontend" lead="Welcome to your DIT342 Frontend Vue.js App">
-      <b-button class="btn_message" variant="primary" v-on:click="getMessage()" >Get Message from Server</b-button>
-      <p>Message from the server:<br/>
-      {{ message }}</p>
-    </b-jumbotron>
+    <div class="logo">Meeting Scheduler</div>
+    <b-container>
+      <div class="heading">
+        Managed Teams
+        <b-button pill style="background-color: #0f817a" @click="addTeam()">
+          <b-icon icon="plus"></b-icon>
+        </b-button>
+      </div>
+      <b-list-group horizontal class="team-list">
+        <b-card
+          v-for="team in managedTeams"
+          :key="team._id"
+          class="team-card"
+          @click="openTeam(team._id)"
+        >
+          {{ team.name }}
+          <b-button
+            variant="outline-danger"
+            size="sm"
+            @click="deleteTeam(team._id)"
+          >
+            <b-icon icon="trash"></b-icon>
+          </b-button>
+        </b-card>
+        <b-card class="team-card" v-if="managedTeams.length === 0"
+          >No teams found.</b-card
+        >
+      </b-list-group>
+    </b-container>
+    <b-container>
+      <div class="heading">Teams You Belong To</div>
+      <b-list-group horizontal class="team-list">
+        <b-card
+          v-for="team in memberOfTeams"
+          :key="team._id"
+          class="team-card"
+          @click="openTeam(team._id)"
+        >
+          {{ team.name }}
+        </b-card>
+        <b-card class="team-card" v-if="memberOfTeams.length === 0"
+          >No teams found.</b-card
+        >
+      </b-list-group>
+    </b-container>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import { Api } from '@/Api'
-
 export default {
   name: 'home',
+  components: {},
   data() {
     return {
-      message: 'none'
+      managedTeams: [],
+      memberOfTeams: [],
+      newTeamName: ''
     }
   },
+  mounted() {
+    Api.get('/users/' + sessionStorage.getItem('id') + '/teams')
+      .then((response) => {
+        this.managedTeams = response.data.managedTeams
+        this.memberOfTeams = response.data.memberOfTeams
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  },
   methods: {
-    getMessage() {
-      Api.get('/')
-        .then(response => {
-          this.message = response.data.message
+    deleteTeam(teamId) {
+      Api.delete('/teams/' + teamId)
+        .then((response) => {
+          if (response.status === 200) {
+            this.managedTeams = this.managedTeams.filter(
+              (team) => team._id !== teamId
+            )
+            this.memberOfTeams = this.memberOfTeams.filter(
+              (team) => team._id !== teamId
+            )
+            this.$router.go(0)
+          }
         })
-        .catch(error => {
-          this.message = error
+        .catch((error) => {
+          console.log(error)
         })
+    },
+    openTeam(teamId) {
+      this.$router.push('/teams/' + teamId)
+    },
+    addTeam() {
+      this.$router.push('/teams/new')
     }
   }
 }
 </script>
-
-<style>
-.btn_message {
-  margin-bottom: 1em;
+<style scoped>
+.team-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.team-card {
+  padding: 2%;
+  margin: 2%;
+  width: 200px;
+  display: inline-block;
+  background-color: #cff4f4;
+  color: #0f817a;
 }
 </style>
