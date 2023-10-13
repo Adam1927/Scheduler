@@ -71,7 +71,8 @@ export default {
           if (response.data.message === 'Log-in successful') {
             sessionStorage.setItem('id', response.data.id)
             this.$router.push('/')
-            this.$router.go(0)
+            // brings back user to login page by reloading so commented out
+            // this.$router.go(0)
           }
         })
         .catch((error) => {

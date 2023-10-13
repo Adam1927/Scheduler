@@ -26,6 +26,7 @@ router.post('/api/teams', auth, async function (req, res, next) {
         // Add members to the team
         if (req.body.members) {
             for (const member of req.body.members) {
+              // something doesn't work here or elsewhere. When teams are created no members are added to the team document in the database
                 if (team.members.indexOf(member) === -1) {
                     team.members.push(member);
                 }

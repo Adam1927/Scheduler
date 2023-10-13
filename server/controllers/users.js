@@ -240,6 +240,28 @@ router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
       return res.status(404).json({ 'message': 'No teams found' });
     }
 
+
+    // inserts the members + mangers of the teams into the teams
+    await user.populate({
+      path: 'managedTeams',
+      populate: { path: 'manager members', select: 'name username' }
+    })
+    
+    await user.populate({
+      path: 'memberOfTeams',
+      populate: { path: 'manager members', select: 'name username' }
+    })
+
+    await user.populate({
+      path: 'managedTeams',
+      populate: { path: 'events', select: 'name username' }
+    })
+    
+    await user.populate({
+      path: 'memberOfTeams',
+      populate: { path: 'events', select: 'name startDate endDate' }
+    })
+
     // Success response
     res.status(200).json({
       'message': 'Teams found',
