@@ -6,6 +6,7 @@ import Login from './views/Login.vue'
 import Signup from './views/SignUp.vue'
 import AddTeam from './views/AddTeam.vue'
 import TeamsPage from './views/TeamsPage.vue'
+import SchedulePage from './views/SchedulePage.vue'
 
 Vue.use(Router)
 
@@ -40,6 +41,13 @@ const router = new Router({
       path: '/teams/:id',
       name: 'teams page',
       component: TeamsPage,
+      meta: { requiresAuth: true }
+    },
+    {
+      // adds the team page router. Id is intended to be the teamID but authentication isn't dependent on whether the user is actually part of the team yet.
+      path: '/schedule',
+      name: 'schedule',
+      component: SchedulePage,
       meta: { requiresAuth: true }
     }
 

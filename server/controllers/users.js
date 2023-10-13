@@ -225,41 +225,34 @@ router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
 
     // API versioning
     if (req.header('X-API-Version') !== 'v1') {
-      return res.status(400).json({ 'message': 'API version not found' });
+      return res.status(400).json({ 'message': 'API version not found' })
     }
 
     // Find user
     var user = await User.findById(user_id)
       .populate('managedTeams')
       .populate('memberOfTeams');
+
     if (user === null) {
-      return res.status(404).json({ 'message': 'User not found' });
+      return res.status(404).json({ 'message': 'User not found' })
     }
 
     if (user.managedTeams.length === 0 && user.memberOfTeams.length === 0) {
-      return res.status(404).json({ 'message': 'No teams found' });
+      return res.status(404).json({ 'message': 'No teams found' })
     }
 
 
     // inserts the members + mangers of the teams into the teams
     await user.populate({
       path: 'managedTeams',
-      populate: { path: 'manager members', select: 'name username' }
+      populate: [{ path: 'manager members', select: 'name username' },
+      { path: 'events', select: 'name startDate endDate' }]
     })
     
     await user.populate({
       path: 'memberOfTeams',
-      populate: { path: 'manager members', select: 'name username' }
-    })
-
-    await user.populate({
-      path: 'managedTeams',
-      populate: { path: 'events', select: 'name username' }
-    })
-    
-    await user.populate({
-      path: 'memberOfTeams',
-      populate: { path: 'events', select: 'name startDate endDate' }
+      populate: [{ path: 'manager members', select: 'name username' },
+      { path: 'events', select: 'name startDate endDate'}]
     })
 
     // Success response
