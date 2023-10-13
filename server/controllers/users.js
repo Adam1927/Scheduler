@@ -236,10 +236,6 @@ router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
       return res.status(404).json({ 'message': 'User not found' });
     }
 
-    if (user.managedTeams.length === 0 && user.memberOfTeams.length === 0) {
-      return res.status(404).json({ 'message': 'No teams found' });
-    }
-
     // Success response
     res.status(200).json({
       'message': 'Teams found',
