@@ -56,8 +56,7 @@ export default {
   data() {
     return {
       managedTeams: [],
-      memberOfTeams: [],
-      newTeamName: ''
+      memberOfTeams: []
     }
   },
   mounted() {
@@ -85,6 +84,7 @@ export default {
           }
         })
         .catch((error) => {
+          alert(error.response.data.message || 'Team deletion failed')
           console.log(error)
         })
     },

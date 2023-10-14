@@ -5,6 +5,8 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Signup from './views/SignUp.vue'
 import AddTeam from './views/AddTeam.vue'
+import TeamDetails from './views/TeamDetails.vue'
+import EventDetails from './views/EventDetails.vue'
 
 Vue.use(Router)
 
@@ -32,6 +34,18 @@ const router = new Router({
       path: '/teams/new',
       name: 'add-team',
       component: AddTeam,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/teams/:id',
+      name: 'team-details',
+      component: TeamDetails,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/events/:id',
+      name: 'event-details',
+      component: EventDetails,
       meta: { requiresAuth: true }
     }
   ]

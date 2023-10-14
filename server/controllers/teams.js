@@ -28,6 +28,9 @@ router.post('/api/teams', auth, async function (req, res, next) {
             for (const member of req.body.members) {
                 if (team.members.indexOf(member) === -1) {
                     team.members.push(member);
+                    const user = await User.findById(member);
+                    user.memberOfTeams.push(team._id);
+                    await user.save();
                 }
             }
         }
@@ -97,6 +100,9 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
             for (const member of req.body.members) {
                 if (team.members.indexOf(member) === -1) {
                     team.members.push(member);
+                    const user = await User.findById(member);
+                    user.memberOfTeams.push(team_id);
+                    await user.save();
                 }
             }
         }
@@ -132,8 +138,8 @@ router.get('/api/teams/:id', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        // Find team
-        var team = await Team.findById(id);
+        // Find team and populate the event field
+        var team = await Team.findById(id).populate('events');
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
@@ -172,11 +178,25 @@ router.get('/api/teams', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        var teams = await Team.find().lean();
+        const query = await Team.find().lean();
+
+        if (req.query.select) {
+            query.select(req.query.select); // Field selection
+        }
+
+        // Check if a sorting query is provided
+        if (req.query.sortBy) {
+            const sort = {};
+            sort[req.query.sortBy] = req.query.sortOrder || 'asc';
+            query.sort(sort); // Apply sorting
+        }
+
+        const teams = await query.exec();
 
         if (teams.length === 0) {
             return res.status(404).json({ 'message': 'No teams found' });
         }
+
 
         // Success response
         res.status(200).json({

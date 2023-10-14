@@ -8,6 +8,7 @@ var usersController = require('./controllers/users');
 var eventsController = require('./controllers/events');
 var teamsController = require('./controllers/teams');
 const session = require('express-session');
+const methodOverride = require('method-override');
 //require('dotenv').config();
 //const sessionKey = process.env.SESSION_KEY;
 const sessionKey = 'sessionKey';
@@ -56,7 +57,9 @@ app.use(session({
         maxAge: 60 * 60 * 1000,  // Session timeout in milliseconds (1 hour)
       }
   }));
-  
+
+// Enable method-override middleware
+app.use(methodOverride('X-HTTP-Method-Override'));
 
 // Import routes
 app.get('/api', function(req, res) {

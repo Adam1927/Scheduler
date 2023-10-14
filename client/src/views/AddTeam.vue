@@ -64,7 +64,7 @@ export default {
           }
         })
         .catch((error) => {
-          alert('Error creating team')
+          alert(error.response.data.message || 'Team creation failed')
           console.log(error)
         })
     },
@@ -80,6 +80,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

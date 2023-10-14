@@ -75,7 +75,7 @@ export default {
         })
         .catch((error) => {
           console.error(error)
-          alert('Log-in failed')
+          alert(error.response.data.message || 'Log-in failed')
           this.username = ''
           this.password = ''
         })
