@@ -1,7 +1,7 @@
 <!--This is a dummy page for now to access event details-->
 <template>
   <div>
-    <div class="logo">Meeting Scheduler</div>
+    <h2>Meeting Scheduler</h2>
     <b-container>
       <div class="heading">
         {{ teamName }}
@@ -93,5 +93,10 @@ export default {
   display: inline-block;
   background-color: #cff4f4;
   color: #0f817a;
+}
+h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-top: 35px;
 }
 </style>

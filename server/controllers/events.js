@@ -60,15 +60,15 @@ router.post('/api/events', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -131,15 +131,15 @@ router.post('/api/events/:event_id/availability', auth, async function (req, res
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -152,7 +152,6 @@ router.post('/api/events/:event_id/availability', auth, async function (req, res
 });
 
 
-// save selected slot
 router.post('/api/events/:id/selected_slot', auth, async function (req, res, next) {
     var id = req.params.id;
     try {
@@ -227,11 +226,11 @@ router.get('/api/events/:id', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -243,7 +242,7 @@ router.get('/api/events/:id', auth, async function (req, res, next) {
 });
 
 
-router.get('/api/events/:event_id/optimal_time', auth, async function (req, res, next) {
+router.post('/api/events/:event_id/optimal_time', auth, async function (req, res, next) {
     var event_id = req.params.event_id;
     try {
 
@@ -280,11 +279,11 @@ router.get('/api/events/:event_id/optimal_time', auth, async function (req, res,
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -326,7 +325,7 @@ router.get('/api/events/:event_id/slots/:slot_id', auth, async function (req, re
             'links': [{
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id + '/slots/' + slot._id,
+                'href': 'http://localhost:3000/api/events/' + event._id + '/slots/' + slot._id,
             }]
         });
     } catch (err) {
@@ -368,11 +367,11 @@ router.patch('/api/events/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'GET',
-                    'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                    'href': 'http://localhost:3000/api/events/' + event._id,
                 }, {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                    'href': 'http://localhost:3000/api/events/' + event._id,
                 }
             ]
         });
@@ -408,7 +407,7 @@ router.delete('/api/events/:id', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/events',
+                'href': 'http://localhost:3000/api/events',
             }
         });
     } catch (err) {
@@ -471,7 +470,7 @@ router.delete('/api/events', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/events',
+                'href': 'http://localhost:3000/api/events',
             }
         });
     } catch (err) {

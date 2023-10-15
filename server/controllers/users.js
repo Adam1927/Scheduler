@@ -41,19 +41,19 @@ router.post('/api/users/register', async function (req, res, next) {
       'links': [{
         'rel': 'self',
         'type': 'PUT',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'PATCH',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'GET',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'DELETE',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }]
     });
   } catch (err) {
@@ -94,19 +94,19 @@ router.post('/api/users/login', async function (req, res, next) {
       'links': [{
         'rel': 'self',
         'type': 'PUT',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'PATCH',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'GET',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'DELETE',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }]
     });
   } catch (err) {
@@ -160,7 +160,7 @@ router.get('/api/users', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'POST',
-          'href': 'http://127.0.0.1:3000/api/users/register',
+          'href': 'http://localhost:3000/api/users/register',
         }
       ]
     });
@@ -196,17 +196,17 @@ router.get('/api/users/:id', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'PUT',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'PATCH',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'DELETE',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         }
       ]
     });
@@ -283,9 +283,11 @@ router.put('/api/users/:id', auth, async function (req, res, next) {
     }
 
     //Check for existing username
-    const usernames = await User.find({ username: req.body.username }).exec();
-    if (usernames.length >= 1) {
-      return res.status(409).json({ 'message': 'Username already exists' });
+    if (req.body.username !== user.username) {
+      const usernames = await User.find({ username: req.body.username }).exec();
+      if (usernames.length >= 1) {
+        return res.status(409).json({ 'message': 'Username already exists' });
+      }
     }
 
     // Update user info
@@ -303,17 +305,17 @@ router.put('/api/users/:id', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'GET',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'PATCH',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'DELETE',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         }
       ]
     });
@@ -371,17 +373,17 @@ router.patch('/api/users/:id', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'GET',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'PUT',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'DELETE',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         }
       ]
     });
@@ -421,7 +423,7 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
       'links': {
         'rel': 'self',
         'type': 'POST',
-        'href': 'http://127.0.0.1:3000/api/users/register',
+        'href': 'http://localhost:3000/api/users/register',
       }
     });
   } catch (err) {

@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
         <b-col>
-          <div class="logo">Meeting Scheduler</div>
+          <h1>Meeting Scheduler</h1>
           <div class="heading">ADD TEAM</div>
           <b-form @submit="onSubmit">
             <b-form-group
@@ -80,3 +80,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-top: 35px;
+}
+</style>

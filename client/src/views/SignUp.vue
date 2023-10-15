@@ -4,7 +4,7 @@
     <b-container>
       <b-row>
         <b-col md="6" offset-md="3">
-          <div class="logo">Meeting Scheduler</div>
+          <h1>Meeting Scheduler</h1>
           <div class="heading">SIGN UP</div>
           <b-form @submit="onSubmit">
             <b-form-group
@@ -75,6 +75,10 @@
         </b-col>
       </b-row>
     </b-container>
+    <img
+      src="../assets/men-row.gif"
+      alt="meeting"
+    />
   </div>
 </template>
 
@@ -129,3 +133,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-top: 35px;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="logo">Meeting Scheduler</div>
+    <h2>Meeting Scheduler</h2>
     <b-container>
       <div class="heading">
         Managed Teams
@@ -45,14 +45,19 @@
         >
       </b-list-group>
     </b-container>
+    <img v-b-toggle.sidebar-1 src="../assets/side-bar-man.gif" alt="side bar" id="side-bar-man" />
+    <SideBarVue/>
   </div>
 </template>
 
 <script>
 import { Api } from '@/Api'
+import SideBarVue from '../components/SideBar.vue'
 export default {
   name: 'home',
-  components: {},
+  components: {
+    SideBarVue
+  },
   data() {
     return {
       managedTeams: [],
@@ -110,5 +115,16 @@ export default {
   display: inline-block;
   background-color: #cff4f4;
   color: #0f817a;
+}
+h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-top: 35px;
+}
+#side-bar-man {
+  position: fixed;
+  bottom: 5%;
+  left: 5%;
+  width: 20%;
 }
 </style>

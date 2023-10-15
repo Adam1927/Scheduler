@@ -49,19 +49,19 @@ router.post('/api/teams', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'PUT',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }]
         });
     } catch (err) {
@@ -116,7 +116,7 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id + '/members',
+                'href': 'http://localhost:3000/api/teams/' + team._id + '/members',
             }]
         });
     } catch (err) {
@@ -152,12 +152,12 @@ router.get('/api/teams/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'PUT',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 },
                 {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 }
             ]
         });
@@ -206,7 +206,7 @@ router.get('/api/teams', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'POST',
-                    'href': 'http://127.0.0.1:3000/api/teams',
+                    'href': 'http://localhost:3000/api/teams',
                 }
             ]
         });
@@ -262,12 +262,12 @@ router.put('/api/teams/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'GET',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 },
                 {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 }
             ]
         });
@@ -317,7 +317,7 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/teams',
+                'href': 'http://localhost:3000/api/teams',
             }
         });
     } catch (err) {
@@ -361,7 +361,7 @@ router.delete('/api/teams', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/teams',
+                'href': 'http://localhost:3000/api/teams',
             }
         });
     } catch (err) {

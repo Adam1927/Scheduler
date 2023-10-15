@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="logo">Meeting Scheduler</div>
     <div class="heading">{{ eventName }}</div>
+    <h2>Choose your availabilities:</h2>
     <b-container style="overflow-y: auto">
       <b-list-group style="display: flex; flex-direction: row">
         <b-list-group-item
@@ -9,32 +9,40 @@
           :key="index"
           style="background-color: #cff4f4; color: white; margin-right: 10px"
         >
-          <b-card style="background-color: #0f817a; color: white">
-            {{ days[index - 1].toDateString() }}
-          </b-card>
-          <b-list-group>
-            <b-list-group-item
-              v-for="row in 9"
-              :key="row"
-              style="background-color: #232526"
-              @click="ToggleSlot(9 * (index - 1) + row - 1)"
-              :class="{ pressed: selectedSlots[9 * (index - 1) + row - 1] }"
-              >{{ row + 7 }}</b-list-group-item
-            ></b-list-group
-          >
+          <div style="height:18%; color:black; font-size:115%">{{ days[index - 1].toDateString() }}</div>
+          <section>
+            <b-list-group>
+              <b-list-group-item
+                v-for="row in 9"
+                :key="row"
+                style="background-color: #232526; height: 10%;"
+                @click="ToggleSlot(9 * (index - 1) + row - 1)"
+                :class="{ pressed: selectedSlots[9 * (index - 1) + row - 1] }"
+                >{{ row + 7 }}</b-list-group-item
+              ></b-list-group
+            >
+          </section>
         </b-list-group-item>
       </b-list-group>
     </b-container>
-    <div>
+    <section>
       <b-button
         id="submit-button"
         type="submit"
         @click="onSubmit"
         variant="primary"
-        style="margin-top: 5%; margin-bottom: 5%"
+        style="margin-top: 1%; margin-bottom: 2%; margin-right: 2%"
         >Submit</b-button
       >
-    </div>
+      <b-button
+        id="optimal-time-button"
+        type="submit"
+        @click="getOptimal"
+        variant="primary"
+        style="margin-top: 1%; margin-bottom: 2%"
+        >Get Optimal Time</b-button
+      >
+    </section>
   </div>
 </template>
 
@@ -51,7 +59,7 @@ export default {
     }
   },
   mounted() {
-    Api.get('/events/' + this.$router.currentRoute.path.substring(8))
+    Api.get('/events/' + this.$route.params.id)
       .then((response) => {
         this.eventName = response.data.event.name
         const startDate = new Date(response.data.event.startDate)
@@ -79,12 +87,10 @@ export default {
       console.log('selectedSlots:', this.selectedSlots)
     },
     onSubmit() {
-      Api.post('/events/' + this.$router.currentRoute.path.substring(8) + '/availability',
-        {
-          availabilities: this.selectedSlots,
-          userId: sessionStorage.getItem('id')
-        }
-      )
+      Api.post('/events/' + this.$route.params.id + '/availability', {
+        availabilities: this.selectedSlots,
+        userId: sessionStorage.getItem('id')
+      })
         .then((response) => {
           if (response.status === 200) {
             alert('Availability submitted successfully')
@@ -94,6 +100,11 @@ export default {
           alert(error.response.data.message || 'Availability submission failed')
           console.log(error)
         })
+    },
+    getOptimal() {
+      this.$router.push(
+        '/events/' + this.$router.currentRoute.path.substring(8) + '/optimal'
+      )
     }
   }
 }
@@ -102,6 +113,15 @@ export default {
 <style scoped>
 .pressed {
   background-color: #0f817a !important;
+  color: white;
+}
+h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-top: 15px;
+}
+#optimal-time-button {
+  background-color: #806319;
   color: white;
 }
 </style>
