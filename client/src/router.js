@@ -5,8 +5,10 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Signup from './views/SignUp.vue'
 import AddTeam from './views/AddTeam.vue'
-import TeamsPage from './views/TeamsPage.vue'
-import SchedulePage from './views/SchedulePage.vue'
+import TeamDetails from './views/TeamDetails.vue'
+import EventDetails from './views/EventDetails.vue'
+import OptimalTime from './views/OptimalTime.vue'
+import EditProfile from './views/EditProfile.vue'
 
 Vue.use(Router)
 
@@ -37,17 +39,27 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      // adds the team page router. Id is intended to be the teamID but authentication isn't dependent on whether the user is actually part of the team yet.
       path: '/teams/:id',
-      name: 'teams page',
-      component: TeamsPage,
+      name: 'team-details',
+      component: TeamDetails,
       meta: { requiresAuth: true }
     },
     {
-      // adds the team page router. Id is intended to be the teamID but authentication isn't dependent on whether the user is actually part of the team yet.
-      path: '/schedule',
-      name: 'schedule',
-      component: SchedulePage,
+      path: '/events/:id',
+      name: 'event-details',
+      component: EventDetails,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/events/:id/optimal',
+      name: 'optimal-time',
+      component: OptimalTime,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/edit-profile',
+      name: 'edit-profile',
+      component: EditProfile,
       meta: { requiresAuth: true }
     }
 

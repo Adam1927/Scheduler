@@ -41,19 +41,19 @@ router.post('/api/users/register', async function (req, res, next) {
       'links': [{
         'rel': 'self',
         'type': 'PUT',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'PATCH',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'GET',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'DELETE',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }]
     });
   } catch (err) {
@@ -94,19 +94,19 @@ router.post('/api/users/login', async function (req, res, next) {
       'links': [{
         'rel': 'self',
         'type': 'PUT',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'PATCH',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'GET',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }, {
         'rel': 'self',
         'type': 'DELETE',
-        'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+        'href': 'http://localhost:3000/api/users/' + user._id,
       }]
     });
   } catch (err) {
@@ -160,7 +160,7 @@ router.get('/api/users', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'POST',
-          'href': 'http://127.0.0.1:3000/api/users/register',
+          'href': 'http://localhost:3000/api/users/register',
         }
       ]
     });
@@ -196,17 +196,17 @@ router.get('/api/users/:id', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'PUT',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'PATCH',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'DELETE',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         }
       ]
     });
@@ -234,26 +234,8 @@ router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
       .populate('memberOfTeams');
 
     if (user === null) {
-      return res.status(404).json({ 'message': 'User not found' })
+      return res.status(404).json({ 'message': 'User not found' });
     }
-
-    if (user.managedTeams.length === 0 && user.memberOfTeams.length === 0) {
-      return res.status(404).json({ 'message': 'No teams found' })
-    }
-
-
-    // inserts the members + mangers of the teams into the teams
-    await user.populate({
-      path: 'managedTeams',
-      populate: [{ path: 'manager members', select: 'name username' },
-      { path: 'events', select: 'name startDate endDate' }]
-    })
-    
-    await user.populate({
-      path: 'memberOfTeams',
-      populate: [{ path: 'manager members', select: 'name username' },
-      { path: 'events', select: 'name startDate endDate'}]
-    })
 
     // Success response
     res.status(200).json({
@@ -302,9 +284,11 @@ router.put('/api/users/:id', auth, async function (req, res, next) {
     }
 
     //Check for existing username
-    const usernames = await User.find({ username: req.body.username }).exec();
-    if (usernames.length >= 1) {
-      return res.status(409).json({ 'message': 'Username already exists' });
+    if (req.body.username !== user.username) {
+      const usernames = await User.find({ username: req.body.username }).exec();
+      if (usernames.length >= 1) {
+        return res.status(409).json({ 'message': 'Username already exists' });
+      }
     }
 
     // Update user info
@@ -322,17 +306,17 @@ router.put('/api/users/:id', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'GET',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'PATCH',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'DELETE',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         }
       ]
     });
@@ -390,17 +374,17 @@ router.patch('/api/users/:id', auth, async function (req, res, next) {
         {
           'rel': 'self',
           'type': 'GET',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'PUT',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         },
         {
           'rel': 'self',
           'type': 'DELETE',
-          'href': 'http://127.0.0.1:3000/api/users/' + user._id,
+          'href': 'http://localhost:3000/api/users/' + user._id,
         }
       ]
     });
@@ -440,7 +424,7 @@ router.delete('/api/users/:id', auth, async function (req, res, next) {
       'links': {
         'rel': 'self',
         'type': 'POST',
-        'href': 'http://127.0.0.1:3000/api/users/register',
+        'href': 'http://localhost:3000/api/users/register',
       }
     });
   } catch (err) {

@@ -29,6 +29,9 @@ router.post('/api/teams', auth, async function (req, res, next) {
               // something doesn't work here or elsewhere. When teams are created no members are added to the team document in the database
                 if (team.members.indexOf(member) === -1) {
                     team.members.push(member);
+                    const user = await User.findById(member);
+                    user.memberOfTeams.push(team._id);
+                    await user.save();
                 }
             }
         }
@@ -47,19 +50,19 @@ router.post('/api/teams', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'PUT',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }]
         });
     } catch (err) {
@@ -98,6 +101,9 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
             for (const member of req.body.members) {
                 if (team.members.indexOf(member) === -1) {
                     team.members.push(member);
+                    const user = await User.findById(member);
+                    user.memberOfTeams.push(team_id);
+                    await user.save();
                 }
             }
         }
@@ -111,7 +117,7 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id + '/members',
+                'href': 'http://localhost:3000/api/teams/' + team._id + '/members',
             }]
         });
     } catch (err) {
@@ -133,8 +139,8 @@ router.get('/api/teams/:id', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        // Find team
-        var team = await Team.findById(id);
+        // Find team and populate the event field
+        var team = await Team.findById(id).populate('events');
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
@@ -147,12 +153,12 @@ router.get('/api/teams/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'PUT',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 },
                 {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 }
             ]
         });
@@ -173,11 +179,25 @@ router.get('/api/teams', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        var teams = await Team.find().lean();
+        const query = await Team.find().lean();
+
+        if (req.query.select) {
+            query.select(req.query.select); // Field selection
+        }
+
+        // Check if a sorting query is provided
+        if (req.query.sortBy) {
+            const sort = {};
+            sort[req.query.sortBy] = req.query.sortOrder || 'asc';
+            query.sort(sort); // Apply sorting
+        }
+
+        const teams = await query.exec();
 
         if (teams.length === 0) {
             return res.status(404).json({ 'message': 'No teams found' });
         }
+
 
         // Success response
         res.status(200).json({
@@ -187,7 +207,7 @@ router.get('/api/teams', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'POST',
-                    'href': 'http://127.0.0.1:3000/api/teams',
+                    'href': 'http://localhost:3000/api/teams',
                 }
             ]
         });
@@ -243,12 +263,12 @@ router.put('/api/teams/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'GET',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 },
                 {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 }
             ]
         });
@@ -298,7 +318,7 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/teams',
+                'href': 'http://localhost:3000/api/teams',
             }
         });
     } catch (err) {
@@ -342,7 +362,7 @@ router.delete('/api/teams', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/teams',
+                'href': 'http://localhost:3000/api/teams',
             }
         });
     } catch (err) {

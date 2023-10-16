@@ -8,7 +8,7 @@
     >
       <b-form-tags
         id="input-1"
-        v-model="selectedUsernames"
+        v-model="selectedUsers"
         no-outer-focus
         class="mb-2"
       >
@@ -78,8 +78,7 @@ export default {
     return {
       search: '',
       users: [],
-      selectedUsernames: [],
-      selectedUserIds: []
+      selectedUsers: []
     }
   },
   created() {
@@ -96,11 +95,14 @@ export default {
     availableOptions() {
       const criteria = this.criteria
       const options = this.users.filter(
-        (user) => this.selectedUsernames.indexOf(user.username) === -1
+        (user) => !this.selectedUsers.includes(user.username)
       ).map((user) => user.username)
+      console.log(options)
+      console.log(this.selectedUsers)
+      console.log(this.users)
       if (criteria) {
         return options
-          .filter((user) => user.toLowerCase().indexOf(criteria) > -1)
+          .filter((username) => username.toLowerCase().indexOf(criteria) > -1)
       }
       return options
     },
@@ -114,16 +116,14 @@ export default {
   methods: {
     onOptionClick({ option, addTag }) {
       addTag(option)
-      this.selectedUserIds.push(
-        this.users.find((user) => user.username === option)._id
-      )
+      const userId = this.users.find((user) => user.username === option)._id
+      this.$emit('userSelected', userId)
       this.search = ''
     },
     onRemoveTag({ tag, removeTag }) {
       removeTag(tag)
-      this.selectedUserIds = this.selectedUserIds.filter(
-        (userId) => userId !== this.users.find((user) => user.username === tag)._id
-      )
+      const userId = this.users.find((user) => user.username === tag)._id
+      this.$emit('userRemoved', userId)
     }
   }
 }

@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
         <b-col>
-          <div class="logo">Meeting Scheduler</div>
+          <h1>Meeting Scheduler</h1>
           <div class="heading">ADD TEAM</div>
           <b-form @submit="onSubmit">
             <b-form-group
@@ -19,11 +19,15 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <AddMemberVue />
+            <AddMemberVue
+              :selectedUserIds="teamMembers"
+              @userSelected="addUser"
+              @userRemoved="removeUser"
+            />
             <b-button id="submit-button" type="submit" variant="primary"
               >Create</b-button
             >
-            </b-form>
+          </b-form>
         </b-col>
       </b-row>
     </b-container>
@@ -37,7 +41,8 @@ export default {
   name: 'add-team',
   data() {
     return {
-      teamName: ''
+      teamName: '',
+      teamMembers: []
     }
   },
   components: {
@@ -46,23 +51,39 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      const users = AddMemberVue.selectedUserIds
+      console.log(this.teamMembers)
+      const users = this.teamMembers
       Api.post('/teams', {
         name: this.teamName,
         user: sessionStorage.getItem('id'),
         members: users
-      }).then((response) => {
-        if (response.status === 201) {
-          this.$router.push('/teams/' + response.data.id)
-        }
-      }).catch((error) => {
-        alert('Error creating team')
-        console.log(error)
       })
+        .then((response) => {
+          if (response.status === 201) {
+            this.$router.push('/teams/' + response.data.id)
+          }
+        })
+        .catch((error) => {
+          alert(error.response.data.message || 'Team creation failed')
+          console.log(error)
+        })
+    },
+    addUser(user) {
+      this.teamMembers.push(user)
+    },
+    removeUser(user) {
+      const index = this.teamMembers.indexOf(user)
+      if (index !== -1) {
+        this.teamMembers.splice(index, 1)
+      }
     }
   }
 }
 </script>
-
-<style>
+<style scoped>
+h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-top: 35px;
+}
 </style>

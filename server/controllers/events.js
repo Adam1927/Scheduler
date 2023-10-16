@@ -49,6 +49,10 @@ router.post('/api/events', auth, async function (req, res, next) {
 
         await event.save();
 
+        const team = await Team.findById(req.body.team);
+        team.events.push(event._id);
+        await team.save();
+
         // Success response
         res.status(201).json({
             'message': 'Event created successfully',
@@ -56,15 +60,15 @@ router.post('/api/events', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -99,16 +103,24 @@ router.post('/api/events/:event_id/availability', auth, async function (req, res
             return res.status(403).json({ 'message': 'User is not a member of this team' });
         }
 
+        //Check if user has already voted
+        if (event.usersVoted.includes(req.body.userId)) {
+            return res.status(403).json({ 'message': 'User has already voted' });
+        }
+
         var slots = event.slots;
         var availabilities = req.body.availabilities;
 
         for (i = 0; i < event.numberOfSlots; i = i + 1) {
-            if (availabilities[i] == 1) {
+            if (availabilities[i] == true) {
                 var slot = await Timeslot.findById(slots[i]);
                 slot.attendees += 1;
                 await slot.save();
             }
         }
+
+        event.usersVoted.push(req.body.userId);
+        event.numberOfVotes += 1;
 
         await event.save();
 
@@ -119,15 +131,15 @@ router.post('/api/events/:event_id/availability', auth, async function (req, res
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -135,6 +147,57 @@ router.post('/api/events/:event_id/availability', auth, async function (req, res
         res.status(500).json({
             error: err,
             'message': 'Availabilities failed to update'
+        });
+    }
+});
+
+
+router.post('/api/events/:id/selected_slot', auth, async function (req, res, next) {
+    var id = req.params.id;
+    try {
+        
+        // API versioning
+        if (req.header('X-API-Version') !== 'v1') {
+            return res.status(400).json({ 'message': 'API version not found' })
+        }
+
+        // Find event
+        var event = await Event.findById(id);
+        if (event === null) {
+            return res.status(404).json({ 'message': 'Event not found' });
+        }
+
+        // Check manager status
+        var team = await Team.findById(event.team);
+        if (req.body.userId != team.manager) {
+            return res.status(403).json({ 'message': 'Only team manager can select slot' });
+        }
+
+        // Check if event is locked
+        if (event.isLocked) {
+            return res.status(403).json({ 'message': 'Event is locked' });
+        }
+
+        // Check if slot exists
+        var slot = await Timeslot.findById(req.body.slotId);
+        if (slot === null) {
+            return res.status(404).json({ 'message': 'Slot not found' });
+        }
+
+        // Save selected slot
+        event.selectedSlot = slot._id;
+        event.isLocked = true;
+        await event.save();
+
+        // Success response
+        res.status(200).json({
+            'message': 'Selected slot saved',
+            'id': event._id
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            'error': err
         });
     }
 });
@@ -163,11 +226,11 @@ router.get('/api/events/:id', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -179,7 +242,7 @@ router.get('/api/events/:id', auth, async function (req, res, next) {
 });
 
 
-router.get('/api/events/:event_id/optimal_time', auth, async function (req, res, next) {
+router.post('/api/events/:event_id/optimal_time', auth, async function (req, res, next) {
     var event_id = req.params.event_id;
     try {
 
@@ -212,14 +275,15 @@ router.get('/api/events/:event_id/optimal_time', auth, async function (req, res,
             'message': 'Optimal time found',
             'id': event._id,
             'optimal_time': optTime,
+            'numberOfVotes': event.numberOfVotes,
             'links': [{
                 'rel': 'self',
                 'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                'href': 'http://localhost:3000/api/events/' + event._id,
             }]
         });
     } catch (err) {
@@ -261,7 +325,7 @@ router.get('/api/events/:event_id/slots/:slot_id', auth, async function (req, re
             'links': [{
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/events/' + event._id + '/slots/' + slot._id,
+                'href': 'http://localhost:3000/api/events/' + event._id + '/slots/' + slot._id,
             }]
         });
     } catch (err) {
@@ -303,11 +367,11 @@ router.patch('/api/events/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'GET',
-                    'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                    'href': 'http://localhost:3000/api/events/' + event._id,
                 }, {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/events/' + event._id,
+                    'href': 'http://localhost:3000/api/events/' + event._id,
                 }
             ]
         });
@@ -343,7 +407,7 @@ router.delete('/api/events/:id', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/events',
+                'href': 'http://localhost:3000/api/events',
             }
         });
     } catch (err) {
@@ -406,7 +470,7 @@ router.delete('/api/events', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/events',
+                'href': 'http://localhost:3000/api/events',
             }
         });
     } catch (err) {

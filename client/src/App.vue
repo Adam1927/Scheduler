@@ -22,11 +22,6 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-.logo {
-  font-size: 3rem;
-  color: #fff;
-  margin-top: 35px;
-}
 .form-group {
   color: #fff;
 }
@@ -37,7 +32,7 @@ export default {
 .heading {
   font-size: 2rem;
   color: #0f817a;
-  margin-top: 35px;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 </style>
