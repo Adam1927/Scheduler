@@ -7,7 +7,11 @@ var eventSchema = new Schema({
     slots: { type: [Schema.Types.ObjectId], ref: 'timeslots' },
     startDate: { type: Date, require: true, immutable: true },
     endDate: { type: Date, require: true, immutable: true },
-    numberOfSlots: { type: Number }
+    numberOfSlots: { type: Number },
+    usersVoted: { type: [Schema.Types.ObjectId], ref: 'users' },
+    numberOfVotes: { type: Number, default: 0 },
+    isLocked: { type: Boolean, default: false },
+    selectedSlot: { type: Schema.Types.ObjectId, ref: 'timeslots' }
 });
 
 module.exports = mongoose.model('events', eventSchema);

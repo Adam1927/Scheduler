@@ -6,12 +6,12 @@ var userSchema = new Schema({
     password: { type: String, required: true },
     name: { type: String, required: true },
     managedTeams: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team'
+        type: Schema.Types.ObjectId,
+        ref: 'teams'
     }],
     memberOfTeams: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team'
+        type: Schema.Types.ObjectId,
+        ref: 'teams'
     }]
 });
 

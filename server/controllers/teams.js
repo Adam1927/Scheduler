@@ -20,8 +20,20 @@ router.post('/api/teams', auth, async function (req, res, next) {
         // Add the new team
         const team = new Team({
             name: req.body.name,
-            manager: req.body.user
+            manager: req.body.user 
         });
+
+        // Add members to the team
+        if (req.body.members) {
+            for (const member of req.body.members) {
+                if (team.members.indexOf(member) === -1) {
+                    team.members.push(member);
+                    const user = await User.findById(member);
+                    user.memberOfTeams.push(team._id);
+                    await user.save();
+                }
+            }
+        }
 
         await team.save();
 
@@ -37,19 +49,15 @@ router.post('/api/teams', auth, async function (req, res, next) {
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
-            }, {
-                'rel': 'self',
-                'type': 'PATCH',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'PUT',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
                 'type': 'DELETE',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                'href': 'http://localhost:3000/api/teams/' + team._id,
             }]
         });
     } catch (err) {
@@ -83,16 +91,15 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
             return res.status(403).json({ 'message': 'Only team manager can add members' });
         }
 
-        var usernames = req.body.usernames;
-        var failed = [];
-        for (const username of usernames) {
-            const user = await User.findOne({ username }).exec();
-            if (!user) {
-                failed.push(username);
-            } else {
-                team.members.push(user._id);
-                user.memberOfTeams.push(team_id);
-                await user.save();
+        // Add members to the team
+        if (req.body.members) {
+            for (const member of req.body.members) {
+                if (team.members.indexOf(member) === -1) {
+                    team.members.push(member);
+                    const user = await User.findById(member);
+                    user.memberOfTeams.push(team_id);
+                    await user.save();
+                }
             }
         }
 
@@ -102,11 +109,10 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
         res.status(200).json({
             'message': 'Team members added successfully',
             'id': team._id,
-            'invalidUsernames': failed,
             'links': [{
                 'rel': 'self',
                 'type': 'GET',
-                'href': 'http://127.0.0.1:3000/api/teams/' + team._id + '/members',
+                'href': 'http://localhost:3000/api/teams/' + team._id + '/members',
             }]
         });
     } catch (err) {
@@ -122,42 +128,42 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
 router.get('/api/teams/:id', auth, async function (req, res, next) {
     var id = req.params.id;
     try {
-  
-      // API versioning
-      if (req.header('X-API-Version') !== 'v1') {
-        return res.status(400).json({ 'message': 'API version not found' });
-      }
-  
-      // Find team
-      var team = await Team.findById(id);
-      if (team === null) {
-        return res.status(404).json({ 'message': 'Team not found' });
-      }
-  
-      // Success response
-      res.status(200).json({
-        'message': 'Team found',
-        'team': team,
-        'links': [
-          {
-            'rel': 'self',
-            'type': 'PUT',
-            'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
-          },
-          {
-            'rel': 'self',
-            'type': 'DELETE',
-            'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
-          }
-        ]
-      });
+
+        // API versioning
+        if (req.header('X-API-Version') !== 'v1') {
+            return res.status(400).json({ 'message': 'API version not found' });
+        }
+
+        // Find team and populate the event field
+        var team = await Team.findById(id).populate('events').populate('members');
+        if (team === null) {
+            return res.status(404).json({ 'message': 'Team not found' });
+        }
+
+        // Success response
+        res.status(200).json({
+            'message': 'Team found',
+            'team': team,
+            'links': [
+                {
+                    'rel': 'self',
+                    'type': 'PUT',
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
+                },
+                {
+                    'rel': 'self',
+                    'type': 'DELETE',
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
+                }
+            ]
+        });
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        'error': err
-      });
+        console.log(err);
+        res.status(500).json({
+            'error': err
+        });
     }
-  });
+});
 
 
 router.get('/api/teams', auth, async function (req, res, next) {
@@ -168,21 +174,33 @@ router.get('/api/teams', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        var teams = await Team.find().lean();
+        const query = await Team.find();
 
-        if (teams.length === 0) {
+        if (req.query.select) {
+            query.select(req.query.select);
+        }
+
+        // Check if a sorting query is provided
+        if (req.query.sortBy) {
+            const sort = {};
+            sort[req.query.sortBy] = req.query.sortOrder || 'asc';
+            query.sort(sort);
+        }
+
+        if (query.length === 0) {
             return res.status(404).json({ 'message': 'No teams found' });
         }
+
 
         // Success response
         res.status(200).json({
             'message': 'Teams found',
-            'teams': teams,
+            'teams': query,
             'links': [
                 {
                     'rel': 'self',
                     'type': 'POST',
-                    'href': 'http://127.0.0.1:3000/api/teams',
+                    'href': 'http://localhost:3000/api/teams',
                 }
             ]
         });
@@ -238,12 +256,12 @@ router.put('/api/teams/:id', auth, async function (req, res, next) {
                 {
                     'rel': 'self',
                     'type': 'GET',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 },
                 {
                     'rel': 'self',
                     'type': 'DELETE',
-                    'href': 'http://127.0.0.1:3000/api/teams/' + team._id,
+                    'href': 'http://localhost:3000/api/teams/' + team._id,
                 }
             ]
         });
@@ -269,7 +287,7 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
-        
+
 
         // Find and delete events and slots
         var events = await Event.find({ '_id': { $in: team.events } });
@@ -293,8 +311,47 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/teams',
+                'href': 'http://localhost:3000/api/teams',
             }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            'error': err
+        });
+    }
+});
+
+router.delete('/api/teams/:id/events', auth, async function (req, res, next) {
+    var id = req.params.id;
+    try {
+
+        // API versioning
+        if (req.header('X-API-Version') !== 'v1') {
+            return res.status(400).json({ 'message': 'API version not found' });
+        }
+
+        // Find team
+        const team = await Team.findById(id);
+        if (team === null) {
+            return res.status(404).json({ 'message': 'Team not found' });
+        }
+
+
+        // Delete events and slots
+        var events = await Event.find({ '_id': { $in: team.events } });
+        for (const e of events) {
+            await Timeslot.deleteMany({ '_id': { $in: e.slots } });
+        }
+        await Event.deleteMany({ '_id': { $in: events } });
+
+        // Remove the events from team's events
+        team.events = [];
+        await team.save();
+
+        // Success response
+        res.status(200).json({
+            'message': 'Events deleted'
         });
     } catch (err) {
         console.log(err);
@@ -337,7 +394,7 @@ router.delete('/api/teams', auth, async function (req, res, next) {
             'links': {
                 'rel': 'self',
                 'type': 'POST',
-                'href': 'http://127.0.0.1:3000/api/teams',
+                'href': 'http://localhost:3000/api/teams',
             }
         });
     } catch (err) {
