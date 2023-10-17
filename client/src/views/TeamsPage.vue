@@ -343,11 +343,10 @@ export default {
     },
     async removeMember(memberID) {
       try {
-        const response = await Api.put('/teams/' + this.team._id + '/members/' + memberID, {
-          requesterID: sessionStorage.getItem('id')
+        await Api.delete(`/teams/${this.team._id}/members/${memberID}`, {
+          data: { requesterID: sessionStorage.getItem('id') }
         })
-        console.log(response)
-        console.log(response.data.message)
+        this.$router.go()
       } catch (error) {
         console.log(error)
         console.log(error.response.data.message)

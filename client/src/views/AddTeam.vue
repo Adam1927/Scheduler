@@ -58,7 +58,7 @@ export default {
       })
         .then((response) => {
           if (response.status === 201) {
-            this.$router.push('/teams/' + response.data.id)
+            this.$router.push('/team/' + response.data.id)
           }
         })
         .catch((error) => {
