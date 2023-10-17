@@ -177,14 +177,14 @@ router.get('/api/teams', auth, async function (req, res, next) {
         const query = await Team.find();
 
         if (req.query.select) {
-            query.select(req.query.select); // Field selection
+            query.select(req.query.select);
         }
 
         // Check if a sorting query is provided
         if (req.query.sortBy) {
             const sort = {};
             sort[req.query.sortBy] = req.query.sortOrder || 'asc';
-            query.sort(sort); // Apply sorting
+            query.sort(sort);
         }
 
         if (query.length === 0) {

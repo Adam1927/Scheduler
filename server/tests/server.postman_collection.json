@@ -1381,6 +1381,70 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"slot2_id\", jsonData.optimal_time.slots[0]);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    var jsonData = JSON.parse(responseBody);\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(jsonData.message).to.equal('Optimal time found');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Version",
+								"value": "v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"{{user2_id}}\",\r\n    \"slotId\": \"{{slot2_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/optimal_time",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"events",
+								":event_id",
+								"optimal_time"
+							],
+							"variable": [
+								{
+									"key": "event_id",
+									"value": "{{event1_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add selected slot",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    var jsonData = JSON.parse(responseBody);\r",
 									"    pm.response.to.have.status(200);\r",
@@ -1410,7 +1474,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3001/api/events/:event_id/optimal_time",
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/selected_slot",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1423,7 +1487,7 @@
 								"api",
 								"events",
 								":event_id",
-								"optimal_time"
+								"selected_slot"
 							],
 							"variable": [
 								{
@@ -1678,7 +1742,7 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"pm.collectionVariables.set(\"slot2_id\", jsonData.event.slots[0]);\r",
+									"pm.collectionVariables.set(\"slot3_id\", jsonData.event.slots[0]);\r",
 									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
@@ -1773,7 +1837,7 @@
 								},
 								{
 									"key": "slot_id",
-									"value": "{{slot2_id}}"
+									"value": "{{slot3_id}}"
 								}
 							]
 						}
@@ -2130,6 +2194,11 @@
 		},
 		{
 			"key": "user2_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "slot3_id",
 			"value": "",
 			"type": "string"
 		}

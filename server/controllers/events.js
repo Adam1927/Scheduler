@@ -352,7 +352,7 @@ router.patch('/api/events/:id', auth, async function (req, res, next) {
             return res.status(404).json({ 'message': 'Event not found' });
         }
 
-        // Change name
+        // Change event name
         if (req.body.name) {
             event.name = req.body.name;
         }
@@ -429,6 +429,7 @@ router.delete('/api/events/:event_id/slots/:slot_id', auth, async function (req,
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
+        //Remove slot from event
         var event = await Event.findById(event_id);
         event.slots.pull(slot_id);
         await event.save();

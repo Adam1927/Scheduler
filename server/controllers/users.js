@@ -146,6 +146,7 @@ router.get('/api/users', auth, async function (req, res, next) {
       return res.status(400).json({ 'message': 'API version not found' });
     }
 
+    // Find all users
     var users = await User.find().lean();
 
     if (users.length === 0) {
@@ -242,9 +243,6 @@ router.get('/api/users/:user_id/teams', auth, async function (req, res, next) {
       'id': user._id,
       'managedTeams': user.managedTeams,
       'memberOfTeams': user.memberOfTeams,
-      'links': [
-        // add team links
-      ]
     });
   } catch (err) {
     console.log(err);
