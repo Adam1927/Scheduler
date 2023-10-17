@@ -53,16 +53,16 @@ export default {
     }
   },
   mounted() {
-    Api.get('/events/' + this.$route.params.id)
+    Api.get('/events/' + this.$route.params.event_id)
       .then((response) => {
         this.eventName = response.data.name
         this.numberOfVotes = response.data.usersVoted
       })
       .catch((error) => {
-        console.log(error)
         alert(error.response.data.message || 'Event not found')
+        console.log(error)
       })
-    Api.post('/events/' + this.$route.params.id + '/optimal_time', {
+    Api.post('/events/' + this.$route.params.event_id + '/optimal_time', {
       userId: sessionStorage.getItem('id')
     })
       .then((response) => {
@@ -71,7 +71,7 @@ export default {
       .catch((error) => {
         console.log(error)
         alert(error.response.data.message || 'Event not found')
-        this.$router.push('/events/' + this.$route.params.id)
+        this.$router.push('/teams/' + this.$route.params.team_id + '/events/' + this.$route.params.event_id)
       })
   },
   methods: {
@@ -79,18 +79,18 @@ export default {
       this.selectedSlot = slotId
     },
     onSubmit() {
-      Api.post('/events/' + this.$route.params.id + '/selected_slot', {
+      Api.post('/events/' + this.$route.params.event_id + '/selected_slot', {
         userId: sessionStorage.getItem('id'),
         slotId: this.selectedSlot
       })
         .then((response) => {
           alert('Vote submitted successfully')
-          this.$router.push('/events/' + this.$route.params.id)
+          this.$router.push('/teams/' + this.$route.params.team_id + '/events/' + this.$route.params.event_id)
         })
         .catch((error) => {
           console.log(error)
           alert(error.response.data.message || 'Event not found')
-          this.$router.push('/events/' + this.$route.params.id)
+          this.$router.push('/teams/' + this.$route.params.team_id + '/events/' + this.$route.params.event_id)
         })
     }
   }

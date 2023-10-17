@@ -5,7 +5,7 @@
       <div class="heading">
         Managed Teams
         <b-button pill style="background-color: #0f817a" @click="addTeam()">
-          <b-icon icon="plus"></b-icon>
+          <b-icon icon="plus-circle"></b-icon>
         </b-button>
       </div>
       <b-list-group horizontal class="team-list">
@@ -71,6 +71,7 @@ export default {
         this.memberOfTeams = response.data.memberOfTeams
       })
       .catch((error) => {
+        alert(error.response.data.message || 'Failed to retrieve teams')
         console.log(error)
       })
   },

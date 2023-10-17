@@ -9,7 +9,7 @@
 export default {
   name: 'App',
   mounted() {
-    document.body.style.backgroundColor = '#232526'
+    document.body.style.backgroundColor = '#36454F'
   }
 }
 </script>

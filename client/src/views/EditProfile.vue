@@ -77,6 +77,7 @@ export default {
         this.putLink = response.data.links.find((link) => link.type === 'PUT')
       })
       .catch((error) => {
+        alert(error.response.data.message || 'Retrieve user failed')
         console.log(error)
       })
   },
@@ -97,7 +98,7 @@ export default {
           }
         })
         .catch((error) => {
-          alert('Error: ' + error.response.data.message)
+          alert('Error: ' + error.response.data.message || 'Update user failed')
           console.log(error)
         })
     }

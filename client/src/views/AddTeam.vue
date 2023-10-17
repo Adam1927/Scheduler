@@ -2,15 +2,14 @@
   <div>
     <b-container>
       <b-row>
-        <b-col>
+        <b-col style="display:flex; flex-direction:column; align-items: center;">
           <h1>Meeting Scheduler</h1>
           <div class="heading">ADD TEAM</div>
-          <b-form @submit="onSubmit">
+          <b-form @submit="onSubmit" style="width: 50%;">
             <b-form-group
               id="team-name-group"
               label="Team Name:"
               label-for="input-1"
-              class="form-group"
             >
               <b-form-input
                 id="input-1"
@@ -51,7 +50,6 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      console.log(this.teamMembers)
       const users = this.teamMembers
       Api.post('/teams', {
         name: this.teamName,

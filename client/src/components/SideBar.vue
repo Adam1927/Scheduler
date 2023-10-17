@@ -29,6 +29,7 @@ export default {
         this.username = response.data.user.username
       })
       .catch((error) => {
+        alert(error.response.data.message || 'User not found')
         console.log(error)
       })
   },
@@ -42,6 +43,7 @@ export default {
           }
         })
         .catch((error) => {
+          alert(error.response.data.message || 'User not found')
           console.log(error)
         })
     }

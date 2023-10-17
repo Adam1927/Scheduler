@@ -54,10 +54,6 @@ router.post('/api/teams', auth, async function (req, res, next) {
                 'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
                 'rel': 'self',
-                'type': 'PATCH',
-                'href': 'http://localhost:3000/api/teams/' + team._id,
-            }, {
-                'rel': 'self',
                 'type': 'PUT',
                 'href': 'http://localhost:3000/api/teams/' + team._id,
             }, {
@@ -150,7 +146,7 @@ router.get('/api/teams/:id', auth, async function (req, res, next) {
         }
 
         // Find team and populate the event field
-        var team = await Team.findById(id).populate('events');
+        var team = await Team.findById(id).populate('events').populate('members');
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
@@ -348,6 +344,45 @@ router.delete('/api/teams/:id', auth, async function (req, res, next) {
                 'type': 'POST',
                 'href': 'http://localhost:3000/api/teams',
             }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            'error': err
+        });
+    }
+});
+
+router.delete('/api/teams/:id/events', auth, async function (req, res, next) {
+    var id = req.params.id;
+    try {
+
+        // API versioning
+        if (req.header('X-API-Version') !== 'v1') {
+            return res.status(400).json({ 'message': 'API version not found' });
+        }
+
+        // Find team
+        const team = await Team.findById(id);
+        if (team === null) {
+            return res.status(404).json({ 'message': 'Team not found' });
+        }
+
+
+        // Delete events and slots
+        var events = await Event.find({ '_id': { $in: team.events } });
+        for (const e of events) {
+            await Timeslot.deleteMany({ '_id': { $in: e.slots } });
+        }
+        await Event.deleteMany({ '_id': { $in: events } });
+
+        // Remove the events from team's events
+        team.events = [];
+        await team.save();
+
+        // Success response
+        res.status(200).json({
+            'message': 'Events deleted'
         });
     } catch (err) {
         console.log(err);
