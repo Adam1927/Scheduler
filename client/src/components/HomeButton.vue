@@ -1,6 +1,6 @@
 <template>
   <b-button
-    style="top: 2%; right: 2%; position: fixed; background-color: #0f817a"
+    style="bottom: 2%; right: 2%; position: fixed; background-color: #0f817a"
     id="home-button"
     variant="primary"
     @click="goHome()"

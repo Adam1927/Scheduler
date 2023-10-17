@@ -63,20 +63,21 @@ Open the `server` and `client` in separate VSCode workspaces or open the combine
 
 ### Purpose
 
-This web application will allow users to share their schedules/calendars together and create joint meetings at the most opportune time for all members. The system evaluates the joint availability of the team members, which they change individually by creating personal events, in order to create meetings at the most optimal time, at the manager's prompt. This will help make organizing and planning easier and more convenient for the users.
-The goal is to give team members a clear overview of everyone’s availability and help in making sure that no one will miss out on important meetings because of unclear time management and communication.
+This web application will allow users to get the most optimal time for a meeting by incorporating teams, events, and polls. The system evaluates the joint availability of the team members, by allowing them to select their free time slots each. The system then calculates the five best time slots for the meeting by the manager’s command. This will help make organizing and planning easier and more convenient for the users. The goal is to give the manager a clear overview of everyone’s availability and help in making sure that no one will miss out on important meetings because of unclear time management and communication.
 
 
 ### Pages
 
 * Login/register page is for all users to enter their account.
-* Main page is where the user can view and edit their calendar, add events, and check notifications.
-* Main page for managers includes all the same but with the additional functionalities for managing (create, edit, delete) teams, meetings, and making users managers.
-* Event page which includes information about the event and edit functionality, is accessed by clicking on an event in the calendar.
-* Meeting page includes all the same but with the addition of information about the team and manager, allows users to RSVP on events and edit functionality is restricted to managers. 
-* Team page includes info about team members: emails, names, privileges. If the user is a manager, they have the functionality to add and remove users or edit the team info. For the manager, it also displays a calendar with all the availabilities of the team.
-* Notification page gives a more detailed look at the users notifications, accessed from notifications from users main page. 
-* Profile page gives users the ability to edit their profiles or delete their account.
+* Main page is where the user can view the teams they are managing and teams they are a member of. They also have the ability to add teams here. There is also a sidebar which gives users the ability to edit their profiles or log out from their account.
+* Team Details page includes info about team members: names. If the user is the manager of that team, they have the functionality to add users, edit the team info or delete the team. The manager also has the option of adding events for the team.
+* Event Details page which includes the calendar to choose the free time slots for that event and submit. If the user is the manager of that team, they have the functionality to get optimal time for the event or delete the event altogether.
+* Add Event page allows for the creation of events, only accessible for the manager of the given team.
+* Add Team page allows for the creation of teams which includes adding members to that team.
+* Edit Profile page which allows users to change their names and usernames.
+* Optimal Time page which shows the manager the best times available for a specific event and gives them the option to choose one.
+* Selected Slot page replaces the Event Details page once the manager has chosen a specific time for that event.
+
 
 
 ### Entity-Relationship (ER) Diagram
