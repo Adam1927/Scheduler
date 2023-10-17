@@ -1382,7 +1382,7 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"pm.collectionVariables.set(\"slot2_id\", jsonData.optimal_time[0]);\r",
+									"pm.collectionVariables.set(\"slot2_id\", jsonData.optimal_time[0]._id);\r",
 									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    var jsonData = JSON.parse(responseBody);\r",
