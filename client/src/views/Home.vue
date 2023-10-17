@@ -95,7 +95,7 @@ export default {
         })
     },
     openTeam(teamId) {
-      this.$router.push('/teamgigo/' + teamId)
+      this.$router.push('/team/' + teamId)
     },
     addTeam() {
       this.$router.push('/teams/new')

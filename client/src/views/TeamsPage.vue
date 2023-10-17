@@ -27,7 +27,7 @@ members field of the team, tried figuring out why (gave up) this should work tho
             </b-col>
             <b-col cols="3">
               <div style="margin: 5%; ml-auto">
-                <b-button pill v-if="!isManager" :style="{ backgroundColor: edit ? '#dc3545' : '#0f817a' }" class="border-0" @click="edit = !edit">
+                <b-button pill v-if="isManager" :style="{ backgroundColor: edit ? '#dc3545' : '#0f817a' }" class="border-0" @click="edit = !edit">
                   <b-icon icon="gear-fill"></b-icon>
                 </b-button>
               </div>
@@ -76,10 +76,14 @@ members field of the team, tried figuring out why (gave up) this should work tho
           <b-card class="base-card">
             <b-row>
               <b-col class="border-0 text-left">
-                <div style="text-left; margin: 5%">
+                <div v-if="!editManager" @click="editManager = !editManager" style="text-left; margin: 5%">
                   Manager: {{ team.manager.name }}<br>
                   Username: {{ team.manager.username }}
+                  <b-icon icon="pencil-fill" inline></b-icon>
                 </div>
+                <b-input v-else v-model="managerUsername" @keyup.enter="saveManagerUserame" ref="editInput" placeholder="Type new manager username and press Enter to save"
+                    class="transparent-input"
+                  ></b-input>
               </b-col>
               <b-col cols="3">
                 <div style="margin: 5%; ml-auto">
@@ -107,20 +111,11 @@ members field of the team, tried figuring out why (gave up) this should work tho
                   </b-button>
                 </b-col></b-row>
                 </b-card>
-                <b-card class="border-0"><b-button v-if="!isEditTeam" @click="editTeam, isEditTeam = !isEditTeam"><b-icon icon="person-plus-fill"></b-icon></b-button></b-card>
                 <div v-if="isEditTeam">
                   <div>
                     <b-button class="btn btn-danger" style="max-width: 35%; margin: 2%" @click="deleteAllMembers">
                       Delete all members
                     </b-button>
-                    <b-form @submit.prevent="addItem">
-                      <p>Enter the names of all the new members you'd like in your team:</p>
-                      <b-input
-                        id="newItem"
-                        v-model="newMember"
-                        placeholder="Type a new member and press Enter to add"
-                      ></b-input>
-                    </b-form>
                     <div v-if="newTeamMembers.length > 0">
                       <h5>{{team.name}} members:</h5>
                       <ul>
@@ -129,20 +124,29 @@ members field of the team, tried figuring out why (gave up) this should work tho
                       <b-button @click="saveTeamMembers" variant="primary">Save Selection</b-button>
                     </div>
                   </div>
-                  <!--
-                  <b-form @submit="onSubmit">
-                    <AddMemberVue
-                      :selectedUserIds="this.team.members"
-                      @userSelected="addUser"
-                      @userRemoved="removeUser"
-                    />
-                    <b-button id="submit-button" type="submit" variant="primary"
-                      >Save</b-button
-                    >
-                  </b-form>-->
                 </div>
               </b-card>
             </div>
+            <b-card class="border-0"><b-button v-if="!isEditTeam" @click="editTeam, isEditTeam = !isEditTeam"><b-icon icon="person-plus-fill"></b-icon></b-button></b-card>
+            <b-col v-if="isEditTeam"
+                      ><b-list-group style="align-items: center"
+                        >
+                      <AddMemberVue
+                          :selectedUserIds="selectedUsers"
+                          :users="users"
+                          @userSelected="addUser"
+                          @userRemoved="removeUser"
+                          style="width: 80%" /></b-list-group
+                      ><b-button
+                        id="submit-button"
+                        type="submit"
+                        @click="saveTeamMembers"
+                        variant="primary"
+                        style="margin-top: 5%; margin-bottom: 5%"
+                        >
+                        Submit</b-button
+                      ></b-col
+                    >
             <div v-if="team.events.length>0">
               <b-card class="text-left ">
                 Team events:
@@ -182,16 +186,17 @@ members field of the team, tried figuring out why (gave up) this should work tho
 
 <script>
 import { Api } from '@/Api'
-// import AddMemberVue from '../components/AddMember.vue'
+import AddMemberVue from '../components/AddMember.vue'
 
 export default {
   mounted() {
     this.fetchUserTeam()
+    this.isManager = false
     this.checkManager()
     document.body.style.backgroundColor = '#232526'
   },
   components: {
-    // AddMemberVue
+    AddMemberVue
   },
   data() {
     return {
@@ -205,20 +210,22 @@ export default {
       isEditTeam: false,
       users: [],
       newTeamMembers: [],
-      newMember: ''
+      selectedUsers: [],
+      newMember: '',
+      editManager: false,
+      managerUsername: ''
     }
     // teams since a user can be part of multiple teams
   },
   methods: {
     async fetchTeam(teamID) {
       try {
-        const response = await Api.get('/teams/' + teamID)
-        console.log(response.data)
+        const response = await Api.get('/teams/' + teamID + '?teamPopulate=true')
+        console.log(response)
         return response.data.team
       } catch (error) {
         console.error(error)
         alert('Team not found!')
-        // TO DO implement
       }
     },
     async fetchUserTeam() {
@@ -228,6 +235,7 @@ export default {
         console.log('hihi: 1', this.team)
         if (response.status === 200) {
           this.team = response.data.team
+          this.users = this.team.members
           console.log('hihi: 2', this.team)
           console.log('this.teams:', this.team)
         }
@@ -284,8 +292,6 @@ export default {
         alert('Unable to delete')
       }
     },
-    async editTeam() {
-    },
     openEvent(eventId) {
       this.$router.push(
         '/teams/' + this.$route.params.id + '/events/' + eventId
@@ -296,9 +302,9 @@ export default {
     },
     async checkManager() {
       try {
-        console.log('user iD', sessionStorage.getItem('id'))
-        console.log('manager iD', this.team.manager)
-        if (sessionStorage.getItem('id') === this.team.manager._id) {
+        const team = await this.fetchTeam(this.$route.params.id)
+        const userID = sessionStorage.getItem('id')
+        if (userID === team.manager._id) {
           this.isManager = true
         } else {
           this.isManager = false
@@ -317,8 +323,9 @@ export default {
       }
     },
     async saveTeamMembers() {
+      this.newTeamMembers = this.teamUnpopulated
       try {
-        const response = await Api.put('/teams/' + this.team._id + '/members', {
+        const response = await Api.post('/teams/' + this.team._id + '/members', {
           userId: sessionStorage.getItem('id'),
           members: this.newTeamMembers
         })
@@ -354,6 +361,7 @@ export default {
           })
         }
         alert('Members deleted successfully')
+        this.$router.go()
       } catch (error) {
         console.log(error)
         alert(error.response?.data.message || 'Error deleting members')
@@ -368,30 +376,28 @@ export default {
         console.log(error)
         alert(error.response?.data.message || 'Error deleting events')
       }
-    }
-
-    /*
-    onSubmit(event) {
-      event.preventDefault()
-      console.log(this.teamUnpopulated.members)
-      const users = this.teamUnpopulated.members
-      console.log(this.team)
-      console.log(this.teamUnpopulated)
-      Api.put('/teams/' + this.team._id + '/members', {
-        userId: sessionStorage.getItem('id'),
-        members: users
-      })
-        .then((response) => {
-          if (response.status === 201) {
-            this.$router.push('/teams/' + response.data.id)
-          }
+    },
+    async saveManagerUserame() {
+      const username = this.managerUsername
+      try {
+        const response = await Api.put('/teams/' + this.$route.params.id, {
+          userId: this.userID,
+          name: this.team.name,
+          managerUsername: username,
+          newManager: true
         })
-        .catch((error) => {
-          alert(error.response.data.message || 'Team creation failed')
-          console.log(error)
-        })
+        console.log(this.userID)
+        console.log('response.data.message', response.data.message)
+        this.managerUsername = ''
+        this.editManager = !this.editManager
+        this.$router.go()
+        return response.data.message
+      } catch (error) {
+        console.log(error)
+        console.log(this.userID)
+        alert('Unable to update')
+      }
     }
-    */
   }
 }
 </script>

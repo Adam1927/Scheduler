@@ -75,6 +75,7 @@ router.post('/api/teams', auth, async function (req, res, next) {
 router.post('/api/teams/:team_id/members', auth, async function (req, res, next) {
     var team_id = req.params.team_id;
     try {
+      console.log('etam', request.body.members)
 
         // API versioning
         if (req.header('X-API-Version') !== 'v1') {
@@ -82,7 +83,6 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
         }
 
         var team = await Team.findById(team_id);
-        console.log('etam', team)
 
         //Check if team exists
         if (team === null) {
@@ -452,8 +452,10 @@ router.delete('/api/teams/:team_id/members/:user_id', auth, async function (req,
           return res.status(404).json({ 'message': 'Team not found' });
       }
       console.log('hi')
+      console.log(req.body.requesterID)
+      console.log(team.manager._id.toString())
       // Check if the user is the manager of the team
-      if (req.body.requesterID !== team.manager) {
+      if (req.body.requesterID !== team.manager._id.toString()) {
           return res.status(403).json({ 'message': 'Only the team manager can remove members' });
       }
       console.log('hi2')
