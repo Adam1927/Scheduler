@@ -1382,7 +1382,7 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"pm.collectionVariables.set(\"slot2_id\", jsonData.optimal_time.slots[0]);\r",
+									"pm.collectionVariables.set(\"slot2_id\", jsonData.optimal_time[0]);\r",
 									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    var jsonData = JSON.parse(responseBody);\r",
@@ -1448,7 +1448,7 @@
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    var jsonData = JSON.parse(responseBody);\r",
 									"    pm.response.to.have.status(200);\r",
-									"    pm.expect(jsonData.message).to.equal('Optimal time found');\r",
+									"    pm.expect(jsonData.message).to.equal('Selected slot saved');\r",
 									"});"
 								],
 								"type": "text/javascript"
