@@ -1405,7 +1405,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": \"{{user2_id}}\",\r\n    \"slotId\": \"{{slot2_id}}\"\r\n}",
+							"raw": "{\r\n    \"userId\": \"{{user2_id}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1466,7 +1466,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": \"{{user2_id}}\"\r\n}",
+							"raw": "{\r\n    \"userId\": \"{{user2_id}}\",\r\n    \"slotId\": \"{{slot2_id}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
