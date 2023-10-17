@@ -117,7 +117,6 @@ export default {
             if (response.data.message === 'Registration successful') {
               sessionStorage.setItem('id', response.data.id)
               this.$router.push('/')
-              this.$router.go(0)
             }
           })
           .catch((error) => {

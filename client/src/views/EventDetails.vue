@@ -59,7 +59,7 @@ export default {
     }
   },
   mounted() {
-    Api.get('/events/' + this.$route.params.id)
+    Api.get('/events/' + this.$route.params.event_id)
       .then((response) => {
         this.eventName = response.data.event.name
         const startDate = new Date(response.data.event.startDate)
@@ -87,7 +87,7 @@ export default {
       console.log('selectedSlots:', this.selectedSlots)
     },
     onSubmit() {
-      Api.post('/events/' + this.$route.params.id + '/availability', {
+      Api.post('/events/' + this.$route.params.event_id + '/availability', {
         availabilities: this.selectedSlots,
         userId: sessionStorage.getItem('id')
       })
@@ -103,7 +103,7 @@ export default {
     },
     getOptimal() {
       this.$router.push(
-        '/events/' + this.$router.currentRoute.path.substring(8) + '/optimal'
+        '/teams/' + this.$route.params.team_id + '/events/' + this.$route.params.event_id + '/optimal'
       )
     }
   }

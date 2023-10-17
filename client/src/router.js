@@ -9,6 +9,7 @@ import TeamDetails from './views/TeamDetails.vue'
 import EventDetails from './views/EventDetails.vue'
 import OptimalTime from './views/OptimalTime.vue'
 import EditProfile from './views/EditProfile.vue'
+import AddEvent from './views/AddEvent.vue'
 
 Vue.use(Router)
 
@@ -45,13 +46,19 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      path: '/events/:id',
+      path: '/teams/:id/events/new',
+      name: 'add-event',
+      component: AddEvent,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/teams/:team_id/events/:event_id',
       name: 'event-details',
       component: EventDetails,
       meta: { requiresAuth: true }
     },
     {
-      path: '/events/:id/optimal',
+      path: '/teams/:team_id/events/:event_id/optimal',
       name: 'optimal-time',
       component: OptimalTime,
       meta: { requiresAuth: true }

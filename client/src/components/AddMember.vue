@@ -2,7 +2,7 @@
   <div>
     <b-form-group
       id="team-members-group"
-      label="Team Members:"
+      label="Add Team Members:"
       label-for="input-1"
       class="form-group"
     >
@@ -86,6 +86,9 @@ export default {
       this.users = response.data.users.filter(
         (user) => user._id !== sessionStorage.getItem('id')
       )
+    }).catch((error) => {
+      alert(error.response.data.message || 'Retrive users failed')
+      console.log(error)
     })
   },
   computed: {
