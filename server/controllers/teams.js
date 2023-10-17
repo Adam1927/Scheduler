@@ -174,7 +174,7 @@ router.get('/api/teams', auth, async function (req, res, next) {
             return res.status(400).json({ 'message': 'API version not found' });
         }
 
-        const query = await Team.find().lean();
+        const query = await Team.find();
 
         if (req.query.select) {
             query.select(req.query.select); // Field selection
@@ -187,9 +187,7 @@ router.get('/api/teams', auth, async function (req, res, next) {
             query.sort(sort); // Apply sorting
         }
 
-        const teams = await query.exec();
-
-        if (teams.length === 0) {
+        if (query.length === 0) {
             return res.status(404).json({ 'message': 'No teams found' });
         }
 
@@ -197,7 +195,7 @@ router.get('/api/teams', auth, async function (req, res, next) {
         // Success response
         res.status(200).json({
             'message': 'Teams found',
-            'teams': teams,
+            'teams': query,
             'links': [
                 {
                     'rel': 'self',
