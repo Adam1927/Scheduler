@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "8b3dec93-4df5-4dfe-8389-22fa5aaefb52",
 		"name": "server",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29405874",
 		"_collection_link": "https://crimson-firefly-423526.postman.co/workspace/Group-11~6e3566de-e04a-4721-8b56-507d1ad5ffab/collection/29405874-8b3dec93-4df5-4dfe-8389-22fa5aaefb52?action=share&source=collection_link&creator=29405874"
 	},
@@ -48,7 +48,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/users/register"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
 					},
 					"response": []
 				},
@@ -81,7 +96,22 @@
 								"type": "text"
 							}
 						],
-						"url": "http://127.0.0.1:3000/api/users/logout"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users/logout",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"logout"
+							]
+						}
 					},
 					"response": []
 				},
@@ -120,7 +150,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/users/login"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
 					},
 					"response": []
 				},
@@ -150,7 +195,21 @@
 								"type": "text"
 							}
 						],
-						"url": "http://127.0.0.1:3000/api/users"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -190,7 +249,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id",
+							"raw": "http://127.0.0.1:3001/api/users/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -198,7 +257,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -259,7 +318,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id",
+							"raw": "http://127.0.0.1:3001/api/users/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -267,7 +326,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -328,7 +387,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id",
+							"raw": "http://127.0.0.1:3001/api/users/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -336,7 +395,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -388,7 +447,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id",
+							"raw": "http://127.0.0.1:3001/api/users/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -396,7 +455,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -454,7 +513,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/users/register"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
 					},
 					"response": []
 				},
@@ -495,7 +569,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/users/register"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
 					},
 					"response": []
 				},
@@ -536,7 +625,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/teams"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/teams",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"teams"
+							]
+						}
 					},
 					"response": []
 				},
@@ -576,7 +679,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:team_id/members",
+							"raw": "http://127.0.0.1:3001/api/teams/:team_id/members",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -584,7 +687,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -637,7 +740,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id/teams",
+							"raw": "http://127.0.0.1:3001/api/users/:id/teams",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -645,7 +748,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -689,7 +792,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:id",
+							"raw": "http://127.0.0.1:3001/api/teams/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -697,7 +800,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -739,7 +842,21 @@
 								"type": "text"
 							}
 						],
-						"url": "http://127.0.0.1:3000/api/teams"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/teams",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"teams"
+							]
+						}
 					},
 					"response": []
 				},
@@ -779,7 +896,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:id",
+							"raw": "http://127.0.0.1:3001/api/teams/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -787,7 +904,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -830,7 +947,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:id/events",
+							"raw": "http://127.0.0.1:3001/api/teams/:id/events",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -838,7 +955,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -882,7 +999,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:id",
+							"raw": "http://127.0.0.1:3001/api/teams/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -890,7 +1007,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -948,7 +1065,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/teams"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/teams",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"teams"
+							]
+						}
 					},
 					"response": []
 				},
@@ -988,7 +1119,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:team_id/members",
+							"raw": "http://127.0.0.1:3001/api/teams/:team_id/members",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -996,7 +1127,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -1050,7 +1181,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/events"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/events",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"events"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1090,7 +1235,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:event_id/availability",
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/availability",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1098,7 +1243,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1151,7 +1296,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:event_id/availability",
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/availability",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1159,7 +1304,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1205,7 +1350,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:id",
+							"raw": "http://127.0.0.1:3001/api/events/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1213,7 +1358,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1265,7 +1410,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:event_id/optimal_time",
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/optimal_time",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1273,7 +1418,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1329,7 +1474,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:event_id/slots/:slot_id",
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/slots/:slot_id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1337,7 +1482,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1395,7 +1540,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:id",
+							"raw": "http://127.0.0.1:3001/api/events/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1403,7 +1548,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1446,7 +1591,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:id",
+							"raw": "http://127.0.0.1:3001/api/events/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1454,7 +1599,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1507,7 +1652,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/events"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/events",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"events"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1540,7 +1699,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:id",
+							"raw": "http://127.0.0.1:3001/api/events/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1548,7 +1707,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1591,7 +1750,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:event_id/slots/:slot_id",
+							"raw": "http://127.0.0.1:3001/api/events/:event_id/slots/:slot_id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1599,7 +1758,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1653,7 +1812,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/events/:id",
+							"raw": "http://127.0.0.1:3001/api/events/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1661,7 +1820,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"events",
@@ -1704,7 +1863,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/teams/:id",
+							"raw": "http://127.0.0.1:3001/api/teams/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1712,7 +1871,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"teams",
@@ -1764,7 +1923,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id",
+							"raw": "http://127.0.0.1:3001/api/users/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1772,7 +1931,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -1823,7 +1982,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:3000/api/users/login"
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/users/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1863,7 +2037,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:3000/api/users/:id",
+							"raw": "http://127.0.0.1:3001/api/users/:id",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1871,7 +2045,7 @@
 								"0",
 								"1"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"api",
 								"users",
@@ -1912,15 +2086,6 @@
 	],
 	"variable": [
 		{
-			"key": "user1_id",
-			"value": ""
-		},
-		{
-			"key": "user2_id",
-			"value": "",
-			"type": "string"
-		},
-		{
 			"key": "user3_id",
 			"value": "",
 			"type": "string"
@@ -1955,6 +2120,16 @@
 		},
 		{
 			"key": "slot2_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user1_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user2_id",
 			"value": "",
 			"type": "string"
 		}
