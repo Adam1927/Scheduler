@@ -9,6 +9,7 @@ import TeamDetails from './views/TeamDetails.vue'
 import EventDetails from './views/EventDetails.vue'
 import OptimalTime from './views/OptimalTime.vue'
 import EditProfile from './views/EditProfile.vue'
+import Team from './views/TeamsPage.vue'
 
 Vue.use(Router)
 
@@ -60,6 +61,12 @@ const router = new Router({
       path: '/edit-profile',
       name: 'edit-profile',
       component: EditProfile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/team/:id',
+      name: 'team',
+      component: Team,
       meta: { requiresAuth: true }
     }
 

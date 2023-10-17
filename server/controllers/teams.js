@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require('../models/user');
 var Team = require('../models/team');
 var Event = require('../models/event');
+const ObjectId = require('mongoose').Types.ObjectId;
 var Timeslot = require('../models/timeslot');
 const auth = require('../middleware/auth');
 require('dotenv').config();
@@ -85,6 +86,7 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
         }
 
         var team = await Team.findById(team_id);
+        console.log('etam', team)
 
         //Check if team exists
         if (team === null) {
@@ -99,17 +101,25 @@ router.post('/api/teams/:team_id/members', auth, async function (req, res, next)
         // Add members to the team
         if (req.body.members) {
             for (const member of req.body.members) {
-                if (team.members.indexOf(member) === -1) {
+              const validUsername = await User.findOne({ username: member}).exec()
+              if(validUsername) {
+                member = validUsername._id
+              }
+              if((ObjectId.isValid(member))&&((String)(new ObjectId(id)) === id)){
+                  if (team.members.indexOf(member) === -1) {
                     team.members.push(member);
                     const user = await User.findById(member);
                     user.memberOfTeams.push(team_id);
                     await user.save();
                 }
+              }else {
+                return res.status(403).json({ 'message': 'Usernames or member object IDs are invalid' })
+              }
             }
         }
 
         await team.save();
-
+        console.log('team', team)
         // Success response
         res.status(200).json({
             'message': 'Team members added successfully',
@@ -144,6 +154,17 @@ router.get('/api/teams/:id', auth, async function (req, res, next) {
         if (team === null) {
             return res.status(404).json({ 'message': 'Team not found' });
         }
+
+        if(req.query.teamPopulate === 'true') {
+          await team.populate([
+            { path: 'manager', select: 'name username' },
+            { path: 'members', select: 'name username' },
+            { path: 'events', select: 'name startDate endDate' }
+          ])
+        }
+        await team.save();
+        console.log('team', team)
+
 
         // Success response
         res.status(200).json({
@@ -249,10 +270,17 @@ router.put('/api/teams/:id', auth, async function (req, res, next) {
 
         // Update team info
         team.name = req.body.name;
-        var oldManager = team.manager;
-        team.members.push(oldManager);
-        var newManager = await User.findOne({ username: req.body.managerUsername }).exec();
-        team.manager = newManager._id;
+
+        if (req.body.newManager) {
+          var newManager = await User.findOne({ username: req.body.managerUsername }).exec()
+          if (newManager == null) {
+            return res.status(404).json({ 'message': "Username must be registered" });
+          }
+          var oldManager = team.manager
+          team.members.push(oldManager)
+          team.manager = newManager._id
+        }
+        
         await team.save();
 
         // Success response
@@ -372,6 +400,70 @@ router.delete('/api/teams', auth, async function (req, res, next) {
         });
     }
 });
+
+router.delete('/api/teams/:team_id/members/:user_id', auth, async function (req, res, next) {
+  const teamId = req.params.team_id;
+  const userId = req.params.user_id;
+
+  try {
+      // API versioning
+      if (req.header('X-API-Version') !== 'v1') {
+          return res.status(400).json({ 'message': 'API version not found' });
+      }
+
+      const team = await Team.findById(teamId);
+      // Check if team exists
+      if (!team) {
+          return res.status(404).json({ 'message': 'Team not found' });
+      }
+      console.log('hi')
+      // Check if the user is the manager of the team
+      if (req.body.requesterID !== team.manager) {
+          return res.status(403).json({ 'message': 'Only the team manager can remove members' });
+      }
+      console.log('hi2')
+
+      const userToRemove = await User.findById(userId);
+      // Check if the user to remove exists
+      if (!userToRemove) {
+          return res.status(404).json({ 'message': 'User not found' });
+      }
+      console.log('hi3')
+      // Check if the user to remove is a member of the team
+      if (!team.members.includes(userId)) {
+          return res.status(404).json({ 'message': 'User is not a member of the team' });
+      }
+
+      // Remove the user from the team's members
+      team.members.pull(userId);
+      await team.save();
+
+      // Remove the team from the user's memberOfTeams
+      userToRemove.memberOfTeams.pull(teamId);
+      await userToRemove.save();
+
+      // Success response
+      res.status(200).json({
+          'message': 'Team member removed successfully',
+          'teamId': teamId,
+          'userId': userId,
+          'links': [
+              {
+                  'rel': 'self',
+                  'type': 'GET',
+                  'href': `http://localhost:3000/api/teams/${teamId}`,
+              },
+          ],
+      });
+  } catch (err) {
+      console.log(err);
+      res.status(500).json({
+          'error': err,
+          'message': 'Failed to remove team member',
+      });
+  }
+});
+
 
 
 module.exports = router;
