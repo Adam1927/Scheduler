@@ -48,11 +48,12 @@ members field of the team, tried figuring out why (gave up) this should work tho
           <div v-if="team.events.length>0">
             <b-card class="text-left ">
               Team events:
-              <b-card class="border-0 text-left" v-for="event in team.events"
+              <b-card class="border-0 text-left" v-for="event in team.events" @click="openEvent(event._id)"
               :key="event._id">
-                Name: {{ member.name }}<br>
+                Name: {{ event.name }}<br>
                 Start Date: {{ event.endDate }}<br>
-                End Date: {{ event.endDate }}
+                End Date: {{ event.endDate }}<br>
+                <b-button @click="openEvent(event._id)">Open</b-button>
               </b-card>
             </b-card>
           </div>
@@ -109,6 +110,9 @@ members field of the team, tried figuring out why (gave up) this should work tho
                 <b-card class="border-0"><b-button v-if="!isEditTeam" @click="editTeam, isEditTeam = !isEditTeam"><b-icon icon="person-plus-fill"></b-icon></b-button></b-card>
                 <div v-if="isEditTeam">
                   <div>
+                    <b-button class="btn btn-danger" style="max-width: 35%; margin: 2%" @click="deleteAllMembers">
+                      Delete all members
+                    </b-button>
                     <b-form @submit.prevent="addItem">
                       <p>Enter the names of all the new members you'd like in your team:</p>
                       <b-input
@@ -144,7 +148,7 @@ members field of the team, tried figuring out why (gave up) this should work tho
                 Team events:
                 <b-card class="border-0 text-left" v-for="event in team.events"
                 :key="event._id" @click="openEvent(event._id)">
-                  Name: {{ member.name }}<br>
+                  Name: {{ event.name }}<br>
                   Start Date: {{ event.endDate }}<br>
                   End Date: {{ event.endDate }}
                 </b-card>
@@ -154,6 +158,9 @@ members field of the team, tried figuring out why (gave up) this should work tho
               <b-button class="btn btn-info" style="max-width: 35%; margin: 2%" @click="addEvent">
                 <b-icon icon="calendar-plus"></b-icon>
                 Add event
+              </b-button>
+              <b-button class="btn btn-danger" style="max-width: 35%; margin: 2%" @click="deleteAllEvents">
+                Delete all events
               </b-button>
             </div>
             <div class="d-flex align-items-center justify-content-center">
@@ -280,10 +287,12 @@ export default {
     async editTeam() {
     },
     openEvent(eventId) {
-      this.$router.push('/events/' + eventId)
+      this.$router.push(
+        '/teams/' + this.$route.params.id + '/events/' + eventId
+      )
     },
     addEvent() {
-      this.$router.push('/events/new')
+      this.$router.push('/teams/' + this.$route.params.id + '/events/new')
     },
     async checkManager() {
       try {
@@ -336,7 +345,31 @@ export default {
         console.log(error)
         console.log(error.response.data.message)
       }
+    },
+    async deleteAllMembers() {
+      try {
+        for (const member of this.team.members) {
+          await Api.delete(`/teams/${this.team._id}/members/${member._id}`, {
+            data: { requesterID: sessionStorage.getItem('id') }
+          })
+        }
+        alert('Members deleted successfully')
+      } catch (error) {
+        console.log(error)
+        alert(error.response?.data.message || 'Error deleting members')
+      }
+    },
+    async deleteAllEvents() {
+      try {
+        const response = await Api.delete(`/teams/${this.$route.params.id}/events`)
+        alert(response.data.message || 'Events deleted successfully')
+        window.location.reload()
+      } catch (error) {
+        console.log(error)
+        alert(error.response?.data.message || 'Error deleting events')
+      }
     }
+
     /*
     onSubmit(event) {
       event.preventDefault()
