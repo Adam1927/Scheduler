@@ -10,6 +10,7 @@ import EventDetails from './views/EventDetails.vue'
 import OptimalTime from './views/OptimalTime.vue'
 import EditProfile from './views/EditProfile.vue'
 import AddEvent from './views/AddEvent.vue'
+import SelectedSlot from './views/SelectedSlot.vue'
 
 Vue.use(Router)
 
@@ -67,6 +68,12 @@ const router = new Router({
       path: '/edit-profile',
       name: 'edit-profile',
       component: EditProfile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/teams/:team_id/events/:event_id/selected-slot',
+      name: 'selected-slot',
+      component: SelectedSlot,
       meta: { requiresAuth: true }
     }
   ]

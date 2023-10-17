@@ -213,7 +213,7 @@ router.get('/api/events/:id', auth, async function (req, res, next) {
         }
 
         // Find event
-        var event = await Event.findById(id);
+        var event = await Event.findById(id).populate('selectedSlot');
         if (event === null) {
             return res.status(404).json({ 'message': 'Event not found' });
         }

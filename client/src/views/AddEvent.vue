@@ -46,13 +46,18 @@
         </b-col>
       </b-row>
     </b-container>
+    <HomeButtonVue />
   </div>
 </template>
 
 <script>
 import { Api } from '@/Api'
+import HomeButtonVue from '../components/HomeButton.vue'
 export default {
   name: 'add-event',
+  components: {
+    HomeButtonVue
+  },
   data() {
     return {
       eventName: '',

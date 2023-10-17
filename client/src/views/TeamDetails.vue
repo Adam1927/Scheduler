@@ -20,13 +20,13 @@
             >
             <div>
               <b-button
-                v-if="is_manager"
+                v-if="isManager"
                 pill
                 style="background-color: #0f817a"
                 @click="addEvent()"
                 ><b-icon icon="plus-circle"></b-icon></b-button
               ><b-button
-                v-if="is_manager"
+                v-if="isManager"
                 variant="danger"
                 pill
                 @click="deleteAllEvents()"
@@ -44,13 +44,13 @@
               :key="member._id"
               >{{ member.name }}</b-list-group-item
             ><AddMemberVue
-              v-if="is_manager"
+              v-if="isManager"
               :selectedUserIds="selectedUsers"
               @userSelected="addUser"
               @userRemoved="removeUser"
               style="width: 80%" /></b-list-group
           ><b-button
-            v-if="is_manager"
+            v-if="isManager"
             id="submit-button"
             type="submit"
             @click="onSubmit"
@@ -61,22 +61,24 @@
         ></b-row
       >
     </b-container>
+    <HomeButtonVue />
   </div>
 </template>
 
 <script>
 import { Api } from '@/Api'
 import AddMemberVue from '../components/AddMember.vue'
+import HomeButtonVue from '../components/HomeButton.vue'
 export default {
   name: 'team-details',
-  components: { AddMemberVue },
+  components: { AddMemberVue, HomeButtonVue },
   data() {
     return {
       teamName: '',
       events: [],
       members: [],
       selectedUsers: [],
-      is_manager: false
+      isManager: false
     }
   },
   mounted() {
@@ -85,7 +87,7 @@ export default {
         this.teamName = response.data.team.name
         this.events = response.data.team.events
         this.members = response.data.team.members
-        this.is_manager =
+        this.isManager =
           sessionStorage.getItem('id') === response.data.team.manager
       })
       .catch((error) => {

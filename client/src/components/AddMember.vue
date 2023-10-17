@@ -100,9 +100,6 @@ export default {
       const options = this.users.filter(
         (user) => !this.selectedUsers.includes(user.username)
       ).map((user) => user.username)
-      console.log(options)
-      console.log(this.selectedUsers)
-      console.log(this.users)
       if (criteria) {
         return options
           .filter((username) => username.toLowerCase().indexOf(criteria) > -1)

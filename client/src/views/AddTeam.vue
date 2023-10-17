@@ -2,10 +2,12 @@
   <div>
     <b-container>
       <b-row>
-        <b-col style="display:flex; flex-direction:column; align-items: center;">
+        <b-col
+          style="display: flex; flex-direction: column; align-items: center"
+        >
           <h1>Meeting Scheduler</h1>
           <div class="heading">ADD TEAM</div>
-          <b-form @submit="onSubmit" style="width: 50%;">
+          <b-form @submit="onSubmit" style="width: 50%">
             <b-form-group
               id="team-name-group"
               label="Team Name:"
@@ -28,14 +30,15 @@
             >
           </b-form>
         </b-col>
-      </b-row>
-    </b-container>
+      </b-row> </b-container
+    ><HomeButtonVue />
   </div>
 </template>
 
 <script>
 import { Api } from '@/Api'
 import AddMemberVue from '../components/AddMember.vue'
+import HomeButtonVue from '../components/HomeButton.vue'
 export default {
   name: 'add-team',
   data() {
@@ -45,7 +48,8 @@ export default {
     }
   },
   components: {
-    AddMemberVue
+    AddMemberVue,
+    HomeButtonVue
   },
   methods: {
     onSubmit(event) {

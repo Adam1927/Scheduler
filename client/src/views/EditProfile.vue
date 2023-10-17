@@ -54,13 +54,16 @@
       src="../assets/men-row.gif"
       alt="meeting"
     />
+    <HomeButtonVue />
   </div>
 </template>
 
 <script>
 import { Api } from '@/Api'
+import HomeButtonVue from '../components/HomeButton.vue'
 export default {
   name: 'edit-profile',
+  components: { HomeButtonVue },
   data() {
     return {
       name: '',

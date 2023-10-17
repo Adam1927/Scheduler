@@ -36,14 +36,16 @@
       style="position: fixed; top: 25%; right: 5%; width: 20%;"
       class="round-men"
     />
+    <HomeButtonVue />
   </div>
 </template>
 
 <script>
 import { Api } from '@/Api'
+import HomeButtonVue from '../components/HomeButton.vue'
 export default {
   name: 'optimal-time',
-  components: {},
+  components: { HomeButtonVue },
   data() {
     return {
       eventName: '',
@@ -85,7 +87,7 @@ export default {
       })
         .then((response) => {
           alert('Vote submitted successfully')
-          this.$router.push('/teams/' + this.$route.params.team_id + '/events/' + this.$route.params.event_id)
+          this.$router.push('/teams/' + this.$route.params.team_id + '/events/' + this.$route.params.event_id + '/selected-slot')
         })
         .catch((error) => {
           console.log(error)
